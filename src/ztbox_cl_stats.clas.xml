@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_CLAS" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <VSEOCLASS>
+    <CLSNAME>ZTBOX_CL_STATS</CLSNAME>
+    <LANGU>E</LANGU>
+    <DESCRIPT>TBOX | Statistical Utilities</DESCRIPT>
+    <STATE>1</STATE>
+    <CLSCCINCL>X</CLSCCINCL>
+    <FIXPT>X</FIXPT>
+    <UNICODE>X</UNICODE>
+   </VSEOCLASS>
+   <DESCRIPTIONS>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTBOX_CL_STATS</CLSNAME>
+     <CMPNAME>COUNT</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Get number of items</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTBOX_CL_STATS</CLSNAME>
+     <CMPNAME>DEV_STD</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Get standard deviation</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTBOX_CL_STATS</CLSNAME>
+     <CMPNAME>ECDF</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Get empirical cumulative distribution function</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTBOX_CL_STATS</CLSNAME>
+     <CMPNAME>EPMF</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Get empirical probability mass function</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTBOX_CL_STATS</CLSNAME>
+     <CMPNAME>FEATURE_SCALING</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Scale data into numbers between 0 and 1</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTBOX_CL_STATS</CLSNAME>
+     <CMPNAME>FREQUENCIES</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Get frequencies of values</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTBOX_CL_STATS</CLSNAME>
+     <CMPNAME>IQR</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Get interquartile range</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTBOX_CL_STATS</CLSNAME>
+     <CMPNAME>MAX</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Get max of values</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTBOX_CL_STATS</CLSNAME>
+     <CMPNAME>MEAN</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Get average value</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTBOX_CL_STATS</CLSNAME>
+     <CMPNAME>MIN</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Get min of values</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTBOX_CL_STATS</CLSNAME>
+     <CMPNAME>MODE</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Get mode of values</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTBOX_CL_STATS</CLSNAME>
+     <CMPNAME>OUTLIERS</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Get outliers</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTBOX_CL_STATS</CLSNAME>
+     <CMPNAME>QUARTILE</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Get quartile</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTBOX_CL_STATS</CLSNAME>
+     <CMPNAME>REMOVE_OUTLIERS</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Remove outliers from data</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTBOX_CL_STATS</CLSNAME>
+     <CMPNAME>STANDARD_NORMALIZATION</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Normalize data</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTBOX_CL_STATS</CLSNAME>
+     <CMPNAME>SUM</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Get sum of values</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZTBOX_CL_STATS</CLSNAME>
+     <CMPNAME>VARIANCE</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Get variance</DESCRIPT>
+    </SEOCOMPOTX>
+   </DESCRIPTIONS>
+  </asx:values>
+ </asx:abap>
+</abapGit>
