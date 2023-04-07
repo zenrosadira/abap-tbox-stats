@@ -83,7 +83,7 @@ DATA(outliers) = prices->outliers( ). " Found 94 outliers, from 1638.36 to 6960.
 
 ### Means
 
-Harmonic Mean is $\frac{n}{\frac{1}{x_1} + \ldots + \frac{1}{x_n}}$, used often in avaraging rates
+Harmonic Mean is $\frac{n}{\frac{1}{x_1}\+\ \ldots\ +\ \frac{1}{x_n}}$, used often in averaging rates
 
 ```abap
 DATA(hmean) = prices->harmonic_mean( ). " [586.17]
@@ -95,7 +95,7 @@ Geometric Mean is $\sqrt[n]{x_1\cdot \ldots \cdot x_n}$, used for population gro
 DATA(gmean) = prices->geometric_mean( ). " [731.17]
 ```
 
-Quadratic Mean is $\sqrt{\frac{x_1^2 + \ldots + x_n^2}{n}}$, used, among other things, to measure the fit of an estimator to a data set
+Quadratic Mean is $\sqrt{\frac{x_1^2\ +\ \ldots\ +\ x_n^2}{n}}$, used, among other things, to measure the fit of an estimator to a data set
 
 ```abap
 DATA(qmean) = prices->quadratic_mean( ). " [1193.42]
