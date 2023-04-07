@@ -110,7 +110,7 @@ DATA(qmean) = prices->quadratic_mean( ). " [1193.42]
 
 ```abap
 DATA(skewness) = prices->skenewss( ). " [3.19] 
-(positive skewness: right tail is longer, the mass of the distribution is concentrated on the left)
+* (positive skewness: right tail is longer, the mass of the distribution is concentrated on the left)
 ```
 
 *Kurtosis* is a measure of the tailedness of the distribution of a real random value: higher kurtosis corresponds to greater extremity of outliers
