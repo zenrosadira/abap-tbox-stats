@@ -80,3 +80,17 @@ A value outside the range $\left[Q1 - 1.5\mathrm{IQR},\ Q3 + 1.5\mathrm{IQR}\rig
 ```abap
 DATA(outliers) = prices->outliers( ). " Found 94 outliers, from 1638.36 to 6960.12
 ```
+
+### Means
+
+Harmonic Mean is $\frac{n}{\frac{1}{x_1} + \ldots + \frac{1}{x_n}}$, used often in avaraging rates
+
+```abap
+DATA(hmean) = prices->harmonic_mean( ). " [586.17]
+```
+
+Geometric Mean is $\sqrt[n]{x_1\cdot \ldots \cdot x_n}$, used for population growth or interest rates
+
+```abap
+DATA(gmean) = prices->geometric_mean( ). " [731.17]
+```
