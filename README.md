@@ -103,3 +103,17 @@ DATA(qmean) = prices->quadratic_mean( ). " [1193.42]
 * The values calculated so far confirm the HM-GM-AM-QM inequalities
 * harmonic mean <= geometric mean <= arithmetic mean <= quadratic mean
 ```
+ 
+### Moments
+
+*Skewness* is a measure of the asymmetry of the distribution of a real random value about its mean. We estimate it with a sample skewness computed with the adjusted Fisher-Pearson standardized moment coefficient (the same used by Excel).
+
+```abap
+DATA(skewness) = prices->skenewss( ). " [3.19] (positive skewness: right tail is longer, the mass of the distribution is concentrated on the left)
+```
+
+*Kurtosis* is a measure of the tailedness of the distribution of a real random value: higher kurtosis corresponds to greater extremity of outliers
+
+```abap
+DATA(kurtosis) = prices->kurtosis( ). " [16.18]
+```
