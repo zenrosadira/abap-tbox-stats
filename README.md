@@ -94,3 +94,9 @@ Geometric Mean is $\sqrt[n]{x_1\cdot \ldots \cdot x_n}$, used for population gro
 ```abap
 DATA(gmean) = prices->geometric_mean( ). " [731.17]
 ```
+
+Quadratic Mean is $\sqrt{\frac{x_1^2 + \ldots + x_n^2}{n}}$, used, among other things, to measure the fit of an estimator to a data set
+
+```abap
+DATA(qmean) = prices->quadratic_mean( ). " [1193.42]
+```
