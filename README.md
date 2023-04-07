@@ -17,28 +17,28 @@ DATA(prices) = stats->col( `LOCCURAM` ).
 Each statistic has its own method
 
 ```abap
-The smallest value
+* The smallest value
 DATA(min_price)       = prices->min( ).                 " [148.00]
 
-The largest value
+* The largest value
 DATA(max_price)       = prices->max( ).                 " [6960.12]
 
-The sum of the values
+* The sum of the values
 DATA(tot_price)       = prices->sum( ).                 " [25055655.41]
 
-The sample mean of the values
+* The sample mean of the values
 DATA(mean_price)      = prices->mean( ).                " [922.96]
 
-The sample variance of the values
+* The sample variance of the values
 DATA(variance_price)  = prices->variance( ).            " [572404.48]
 
-The sample standard deviation of the values
+* The sample standard deviation of the values
 DATA(std_dev_price)   = prices->standard_deviation( ).  " [756.57]
 
-The number of distinct values
+* The number of distinct values
 DATA(dist_prices)     = prices->count_distinct( ).      " [324]
 
-The number of not initial values
+* The number of not initial values
 DATA(not_ini_prices)  = prices->count_not_initial( ).   " [27147]
 ```
 
