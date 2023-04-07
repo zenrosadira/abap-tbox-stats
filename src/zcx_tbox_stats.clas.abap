@@ -1,0 +1,39 @@
+class ZCX_TBOX_STATS definition
+  public
+  inheriting from CX_STATIC_CHECK
+  create private
+
+  global friends ZTBOX_CL_STATS
+                 ZTBOX_CL_STATS_GROUP .
+
+public section.
+
+  constants TABLE_TYPE_NOT_SUPPORTED type SOTR_CONC value '00155D595A021EDDB5AEDAB6AD3443CB' ##NO_TEXT.
+  constants COLUMN_NOT_NUMERICAL type SOTR_CONC value '00155D595A021EDDB5AF220CBC1D040A' ##NO_TEXT.
+  constants COLUMN_NOT_FOUND type SOTR_CONC value '00155D595A021EDDB5AF257B5B98040E' ##NO_TEXT.
+  constants COLUMN_GROUP_NOT_FOUND type SOTR_CONC value '00155D595A021EDDB5B0093DAD7D44C8' ##NO_TEXT.
+  data COLUMN type NAME_FELD .
+
+  methods CONSTRUCTOR
+    importing
+      !TEXTID like TEXTID optional
+      !PREVIOUS like PREVIOUS optional
+      !COLUMN type NAME_FELD optional .
+protected section.
+private section.
+ENDCLASS.
+
+
+
+CLASS ZCX_TBOX_STATS IMPLEMENTATION.
+
+
+  method CONSTRUCTOR.
+CALL METHOD SUPER->CONSTRUCTOR
+EXPORTING
+TEXTID = TEXTID
+PREVIOUS = PREVIOUS
+.
+me->COLUMN = COLUMN .
+  endmethod.
+ENDCLASS.
