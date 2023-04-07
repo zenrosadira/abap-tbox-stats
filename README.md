@@ -99,4 +99,7 @@ Quadratic Mean is $\sqrt{\frac{x_1^2\ +\ \ldots\ +\ x_n^2}{n}}$, used, among oth
 
 ```abap
 DATA(qmean) = prices->quadratic_mean( ). " [1193.42]
+
+* The values calculated so far confirm the HM-GM-AM-QM inequalities
+* harmonic mean <= geometric mean <= arithmetic mean <= quadratic mean
 ```
