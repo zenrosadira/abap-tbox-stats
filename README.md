@@ -17,14 +17,29 @@ DATA(prices) = stats->col( `LOCCURAM` ).
 Each statistic has its own method
 
 ```abap
-DATA(min_price)       = prices->min( ).                 " --> Returns the smallest value [148.00]
-DATA(max_price)       = prices->max( ).                 " --> Returns the largest value [6960.12]
-DATA(tot_price)       = prices->sum( ).                 " --> Returns the sum of the values [25055655.41]
-DATA(mean_price)      = prices->mean( ).                " --> Returns the sample mean of the values [922.96]
-DATA(variance_price)  = prices->variance( ).            " --> Returns the sample variance of the values [572404.48]
-DATA(std_dev_price)   = prices->standard_deviation( ).  " --> Returns the sample standard deviation of the values [756.57]
-DATA(dist_prices)     = prices->count_distinct( ).      " --> Returns the number of distinct values [324]
-DATA(not_ini_prices)  = prices->count_not_initial( ).   " --> Returns the number of not initial values [27147]
+The smallest value
+DATA(min_price)       = prices->min( ).                 " [148.00]
+
+The largest value
+DATA(max_price)       = prices->max( ).                 " [6960.12]
+
+The sum of the values
+DATA(tot_price)       = prices->sum( ).                 " [25055655.41]
+
+The sample mean of the values
+DATA(mean_price)      = prices->mean( ).                " [922.96]
+
+The sample variance of the values
+DATA(variance_price)  = prices->variance( ).            " [572404.48]
+
+The sample standard deviation of the values
+DATA(std_dev_price)   = prices->standard_deviation( ).  " [756.57]
+
+The number of distinct values
+DATA(dist_prices)     = prices->count_distinct( ).      " [324]
+
+The number of not initial values
+DATA(not_ini_prices)  = prices->count_not_initial( ).   " [27147]
 ```
 
 Alternatively, you can use the main instance, which represents the entire table, passing the name of the relevant column:
@@ -46,7 +61,7 @@ DATA(first_quartile) = prices->first_quartile( ). " [566.10]
 
 ```abap
 DATA(second_quartile) = prices->second_quartile( ). " [670.34]
-DATA(median)          = prices->median( ). " Method median( ) is just another way to call second_quartile( )
+DATA(median)          = prices->median( ). " It's just a synonym for second_quartile( )
 ```
 
 75% of the data is below the *third quartile* $Q3$
