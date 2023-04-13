@@ -63,7 +63,7 @@ DATA(not_init)   = prices->count_not_initial( ).         " [27147]
 Alternatively, you can use the main instance, which represents the entire table, passing the name of the relevant column:
 
 ```abap
-DATA(min_price)       = stats->min( `LOCCURAM` ).
+DATA(min_price)  = stats->min( `LOCCURAM` ).
 ```
 
 ## More specific descriptive statistics
