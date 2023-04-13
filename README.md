@@ -230,11 +230,13 @@ DATA(covariance) = stats->covariance( `LOCCURAM, LUGGWEIGHT` ). " [0.17]
 ```
 
 ## Aggregations
-Each instance method explained so far can be calculated by first perform a group by with another column
+Each instance method explained so far can be calculated by first perform a group-by with other columns
 
 ```abap
 DATA(stats)               = NEW ztbox_cl_stats( sbook ).
 DATA(grouped_by_currency) = stats->group_by( `FORCURKEY` ).
+" You can also perform a group-by with multiple columns, just comma-separate them
+" e.g. stats->group_by( `FORCURKEY, SMOKER` ).
 DATA(prices_per_currency) = grouped_by_currency->col( `LOCCURAM` ).
 DATA(dev_cur)             = prices_per_currency->standard_deviation( ).
 ```
