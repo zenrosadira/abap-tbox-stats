@@ -153,6 +153,8 @@ The *histogram* is a table of couples $(\mathrm{bin}_i, \mathrm{f}_i)$ where $\m
 DATA(histogram) = prices->histogram( ).
 ```
 
+![hist](img/hist.png)
+
 The bins are created using *Freedman-Diaconis rule*: the bins width is $\frac{2\mathrm{iqr}}{\sqrt[3]{n}}$ where $\mathrm{iqr}$ is the interquartile range, and the total number of bins is $\mathrm{floor}\left(\frac{\mathrm{max} - \mathrm{min}}{\mathrm{bin\ width}}\right)$
 
 Dividing each frequency by the total we get an estimate of the probability to draw a value in the corresponding bin, this is the *empirical probability*
