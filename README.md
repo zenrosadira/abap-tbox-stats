@@ -153,7 +153,7 @@ The *histogram* is a table of couples $(\mathrm{bin}_i, \mathrm{f}_i)$ where $\m
 DATA(histogram) = prices->histogram( ).
 ```
 
-![hist](img/hist.png)
+<img src="https://raw.githubusercontent.com/zenrosadira/abap-tbox-stats/main/img/hist.png?token=GHSAT0AAAAAAB7YVZT2CJ4FKLEFJXWNVMPQZBYIFPQ" width="350" height="250">
 
 The bins are created using *Freedman-Diaconis rule*: the bins width is $\frac{2\mathrm{iqr}}{\sqrt[3]{n}}$ where $\mathrm{iqr}$ is the interquartile range, and the total number of bins is $\mathrm{floor}\left(\frac{\mathrm{max} - \mathrm{min}}{\mathrm{bin\ width}}\right)$
 
