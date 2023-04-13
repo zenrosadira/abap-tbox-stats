@@ -158,7 +158,7 @@ Dividing each frequency by the total we get an estimate of the probability to dr
 DATA(empirical_prob) = prices->empiricial_pdf( ).
 ```
 
-Similarly, for each distinct value $x$, we can compute the number $\frac{\mathrm{number\ of\ elements\ \le\ x}}{n}$, this is the *empirical distribution function*
+Similarly, for each distinct value $x$, we can compute the number $\frac{\mathrm{number\ of\ elements}\ \le\ x}}{n}$, this is the *empirical distribution function*
 
 ```abap
 DATA(empirical_dist) = prices->empirical_cdf( ).
@@ -170,4 +170,4 @@ In order to answer the question "are the values normally distributed" you can us
 DATA(normality_test) = prices->are_normal( ).
 ```
 
-This method implements the [Jarque-Bera normality test](https://en.wikipedia.org/wiki/Jarque%E2%80%93Bera_test).
+This method implements the [Jarque-Bera normality test](https://en.wikipedia.org/wiki/Jarque%E2%80%93Bera_test). The $p$-value is an exported parameter and the test is considered passed if $p\mathrm{-value} \le 0.5$.
