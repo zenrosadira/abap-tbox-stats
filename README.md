@@ -212,3 +212,19 @@ DATA(poisson_distribution) = ztbox_cl_stats=>poisson( l = 4 size = 100 ).
 " Generate a sample of 100 values from a poisson distribution with lambda parameter = 4
 " default is =>poisson( l = `1.0` size = 1 )
 ```
+
+## Joint Variability
+### Covariance
+In order to compute the sample covariance of two columns call method `->covariance` passing the columns separated by a comma
+
+```abap
+DATA(stats)      = NEW ztbox_cl_stats( t_sbook ).
+DATA(covariance) = stats->covariance( `LOCCURAM, LUGGWEIGHT` ). " [1037.40]
+```
+
+### Correlation
+The sample correlation coefficient is computed by calling `->correlation` method
+```abap
+DATA(stats)      = NEW ztbox_cl_stats( t_sbook ).
+DATA(covariance) = stats->covariance( `LOCCURAM, LUGGWEIGHT` ). " [0.17]
+```
