@@ -255,18 +255,18 @@ DATA(stats)               = NEW ztbox_cl_stats( sbook ).
 DATA(grouped_by_currency) = stats->group_by( `FORCURKEY` ).
 " You can also perform a group-by with multiple columns, just comma-separate them
 " e.g. stats->group_by( `FORCURKEY, SMOKER` ).
-DATA(prices_per_currency) = grouped_by_currency->col( `LOCCURAM` ).
+DATA(prices_per_currency) = grouped_by_currency->col( `FORCURAM` ).
 DATA(dev_cur)             = prices_per_currency->standard_deviation( ).
 ```
 
-`dev_cur` is a table with two fields: the second one is a value containing the statistics computed (standard deviation in this example), the first one is a table with the group-by conditions: `group_field` contains the field grouped by (only `FORCURKEY` in this example) and `group_value` contains the corresponding value.
+`dev_cur` is a table with two fields: the first one is a table with the group-by conditions (group-by field and value), the second one contains the statistics computed (standard deviation in this example).
 
-The same result can be obtained passing a table with the fields grouped by and a field named with the statistic to be computed:
+The same result can be obtained passing a table having the group-by fields and an additional field for the statistic
 
 ```abap
 TYPES: BEGIN OF ty_dev_cur,
          forcurkey          TYPE sbook-forcurkey,
-         standard_deviation TYPE f,
+         price_std_dev      TYPE f,
        END OF ty_dev_cur.
 
 DATA t_dev_cur TYPE TABLE OF ty_dev_cur.
@@ -274,18 +274,18 @@ DATA t_dev_cur TYPE TABLE OF ty_dev_cur.
 prices_per_currency->standard_deviation( IMPORTING e_result = t_dev_cur ).
 ```
 
-| FORCURKEY | STANDARD_DEVIATION |
+| FORCURKEY | PRICE_STD_DEV |
 | :---: | :---: |
-| EUR	| 7.4552828433404977E+02 |
-| USD	| 7.5823449440803665E+02 |
-| GBP	| 6.7810223234147134E+02 |
-| JPY	| 6.0950004556126635E+02 |
-| CHF	| 8.1988721181761377E+02 |
-| AUD	| 7.7221881749653369E+02 |
-| ZAR	| 7.9085811097466910E+02 |
-| SGD	| 1.0533820843863814E+03 |
-| SEK	| 6.0380071198098267E+02 |
-| CAD	| 7.8378300759376316E+02 |
+| EUR	| 5.1572747413790194E+02 |
+| USD	| 4.5762828742456850E+02 |
+| GBP	| 2.9501066968757806E+02 |
+| JPY	| 5.2009995569407386E+02 |
+| CHF	| 8.5376086718562442E+02 |
+| AUD	| 3.9095624219014348E+02 |
+| ZAR	| 4.3830708141667837E+03 |
+| SGD	| 1.0340758423220680E+03 |
+| SEK	| 4.4754710657225996E+03 |
+| CAD	| 7.7769277990938747E+02 |
 
 # Contributions
 Many features can be improved or extended (new distribution generators? implementing statistic tests?) every contribution is appreciated
