@@ -155,7 +155,7 @@ The bins are created using *Freedman-Diaconis rule*: the bins width is $\frac{2\
 Dividing each frequency by the total we get an estimate of the probability to draw a value in the corresponding bin, this is the *empirical probability*
 
 ```abap
-DATA(empirical_prob) = prices->empiricial_pdf( ).
+DATA(empirical_prob) = prices->empirical_pdf( ).
 ```
 
 Similarly, for each distinct value $x$, we can compute the number $\frac{\mathrm{number\ of\ elements}\ \le x}{n}$, this is the *empirical distribution function*
