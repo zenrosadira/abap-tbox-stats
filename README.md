@@ -126,9 +126,7 @@ DATA(qmean) = prices->quadratic_mean( ). " [1193.42]
 
 *Skewness* is a measure of the asymmetry of the distribution of a real random value about its mean. We estimate it with a sample skewness computed with the adjusted Fisher-Pearson standardized moment coefficient (the same used by Excel).
 
-$\sum_{i=1}^n i$
-
-$$\mathrm{skew} = \frac{n}{(n-1)(n-2)}\frac{\sum_{i=1}^{n} {(x_i - \bar{x})}^3}{\left[\frac{1}{n-1}\sum_{i=1}^{n} (x_i - \bar{x})^2 \right]^{3/2}}$$
+$$\mathrm{skewness} = \frac{n}{(n-1)(n-2)}\frac{\sum\limits_{i=1}^n {(x_i - \bar{x})}^3}{\left[\frac{1}{n-1}\sum\limits_{i=1}^{n} (x_i - \bar{x})^2 \right]^{3/2}}$$
 
 ```abap
 DATA(skewness) = prices->skenewss( ). " [3.19] 
@@ -136,6 +134,8 @@ DATA(skewness) = prices->skenewss( ). " [3.19]
 ```
 
 *Kurtosis* is a measure of the tailedness of the distribution of a real random value: higher kurtosis corresponds to greater extremity of outliers
+
+$$\mathrm{kurtosis} = \frac{1}{(n-1)}\frac{\sum\limits_{i=1}^n {(x_i - \bar{x})}^4}{\left[\frac{1}{n-1}\sum\limits_{i=1}^{n} (x_i - \bar{x})^2 \right]^{4/2}}$$
 
 ```abap
 DATA(kurtosis) = prices->kurtosis( ). " [19.18]
