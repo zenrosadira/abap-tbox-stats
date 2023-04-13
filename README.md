@@ -1,4 +1,6 @@
 # ABAP Statistical Tools
+![stat](img/stat_abap.png)
+
 Statistics with ABAP: why not? This project consist of an ABAP class `ztbox_cl_stats` where some of the most common descriptive statistics functions have been included together with simple tools to generate distributions and produce empirical inference analyses.
 
 ## Basic Features & Elementary Statistics
@@ -209,7 +211,7 @@ DATA(geometric_values) = ztbox_cl_stats=>geometric( p = `0.6` size = 100 ).
 " default is =>geometric( p = `0.5` size = 1 )
 
 " Discrete Poisson Distribution
-DATA(poisson_distribution) = ztbox_cl_stats=>poisson( l = 4 size = 100 ).
+DATA(poisson_values) = ztbox_cl_stats=>poisson( l = 4 size = 100 ).
 " Generate a sample of 100 values from a poisson distribution with lambda parameter = 4
 " default is =>poisson( l = `1.0` size = 1 )
 ```
