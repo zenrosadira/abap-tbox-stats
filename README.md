@@ -1,4 +1,5 @@
 # ABAP Statistical Tools
+Statistics with ABAP: why not? In this ABAP class `ztbox_cl_stats` some of the most common descriptive statistics functions have been included together with simple tools to generate distributions and produce empirical inference analyses.
 
 ## Basic Features & Elementary Statistics
 Let's compute some statistics on `SBOOK` table
@@ -279,3 +280,9 @@ prices_per_currency->standard_deviation( IMPORTING e_result = t_dev_cur ).
 | SGD	| 1.0533820843863814E+03 |
 | SEK	| 6.0380071198098267E+02 |
 | CAD	| 7.8378300759376316E+02 |
+
+# Contributions
+Many features can be improved or extended (new distribution generators? implementing statistic tests?) every contribution is appreciated. 
+
+# Installation
+Install this project using [abapGit](https://abapgit.org/) ![abapGit](https://docs.abapgit.org/img/favicon.png)
