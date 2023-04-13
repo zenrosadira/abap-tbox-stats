@@ -174,10 +174,41 @@ This method implements the [Jarque-Bera normality test](https://en.wikipedia.org
 
 ## Distributions
 
-The following are static methods to generate sample from various distributions
+The following are static methods to generate samples from various distributions
 
 ```abap
+" Continuous Uniform Distribution
 DATA(uniform_values) = ztbox_cl_stats=>uniform( low = 1 high = 50 size = 10000 ).
 " Generate a sample of 10000 values from a uniform distribution in the interval [1, 50]
 " default is =>uniform( low = 0 high = 1 size = 1 )
+
+" Continuous Normal Distribution
+DATA(normal_values) = ztbox_cl_stats=>normal( mean = `-3` variance = 13 size = 1000 ).
+" Generate a sample of 1000 values from a normal distribution with mean = -3 and variance 13
+" default is =>normal( mean = 0 variance = 1 size = 1 )
+
+" Continuous Standard Distribution
+DATA(standard_values) = ztbox_cl_stats=>standard( size = 100 ).
+" Generate a sample of 100 values from a standard distribution, i.e. a normal distribution with mean = 0 and variance = 1
+" default is =>normal( size = 1 )
+
+" Discrete Bernoulli Distribution
+DATA(bernoulli_values) = ztbox_cl_stats=>bernoulli( p = `0.8` size = 100 ).
+" Generate a sample of 100 values from a bernoulli distribution with probability parameter = 0.8
+" default is =>bernoulli( p = `0.5` size = 1 )
+
+" Discrete Binomial Distribution
+DATA(binomial_values) = ztbox_cl_stats=>binomial( n = 15 p = `0.4` size = 100 ).
+" Generate a sample of 100 values from a binomial distribution with probability parameter = 0.4 and number of trials = 15
+" default is =>binomial( n = 2 p = `0.5` size = 1 )
+
+" Discrete Geometric Distribution
+DATA(geometric_values) = ztbox_cl_stats=>geometric( p = `0.6` size = 100 ).
+" Generate a sample of 100 values from a geometric distribution with probability parameter = 0.6
+" default is =>geometric( p = `0.5` size = 1 )
+
+" Discrete Poisson Distribution
+DATA(poisson_distribution) = ztbox_cl_stats=>poisson( l = 4 size = 100 ).
+" Generate a sample of 100 values from a poisson distribution with lambda parameter = 4
+" default is =>poisson( l = `1.0` size = 1 )
 ```
