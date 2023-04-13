@@ -194,7 +194,8 @@ DATA(normal_values) = ztbox_cl_stats=>normal( mean = `-3` variance = 13 size = 1
 
 " Continuous Standard Distribution
 DATA(standard_values) = ztbox_cl_stats=>standard( size = 100 ).
-" Generate a sample of 100 values from a standard distribution, i.e. a normal distribution with mean = 0 and variance = 1
+" Generate a sample of 100 values from a standard distribution, i.e. a normal distribution 
+" with mean = 0 and variance = 1
 " default is =>normal( size = 1 )
 
 " Discrete Bernoulli Distribution
@@ -204,7 +205,8 @@ DATA(bernoulli_values) = ztbox_cl_stats=>bernoulli( p = `0.8` size = 100 ).
 
 " Discrete Binomial Distribution
 DATA(binomial_values) = ztbox_cl_stats=>binomial( n = 15 p = `0.4` size = 100 ).
-" Generate a sample of 100 values from a binomial distribution with probability parameter = 0.4 and number of trials = 15
+" Generate a sample of 100 values from a binomial distribution 
+" with probability parameter = 0.4 and number of trials = 15
 " default is =>binomial( n = 2 p = `0.5` size = 1 )
 
 " Discrete Geometric Distribution
