@@ -1,5 +1,8 @@
 # ABAP Statistical Tools
-![stat](img/stat_abap.png)
+
+<p align="center">
+<img src="https://github.com/zenrosadira/abap-tbox-stats/blob/main/img/stat_abap.png?raw=true">
+</p>
 
 Statistics with ABAP: why not? This project consist of an ABAP class `ztbox_cl_stats` where some of the most common descriptive statistics functions have been included together with simple tools to generate distributions and produce empirical inference analyses.
 
@@ -153,7 +156,9 @@ The *histogram* is a table of couples $(\mathrm{bin}_i, \mathrm{f}_i)$ where $\m
 DATA(histogram) = prices->histogram( ).
 ```
 
-<img src="https://github.com/zenrosadira/abap-tbox-stats/blob/main/img/hist.png?raw=true" width="350" height="250">
+<p align="center">
+<img src="https://github.com/zenrosadira/abap-tbox-stats/blob/main/img/hist.png?raw=true" width="400" height="250">
+</p>
 
 The bins are created using *Freedman-Diaconis rule*: the bins width is $\frac{2\mathrm{iqr}}{\sqrt[3]{n}}$ where $\mathrm{iqr}$ is the interquartile range, and the total number of bins is $\mathrm{floor}\left(\frac{\mathrm{max} - \mathrm{min}}{\mathrm{bin\ width}}\right)$
 
@@ -168,6 +173,9 @@ Similarly, for each distinct value $x$, we can compute the number $\frac{\mathrm
 ```abap
 DATA(empirical_dist) = prices->empirical_cdf( ).
 ```
+<p align="center">
+<img src="https://github.com/zenrosadira/abap-tbox-stats/blob/main/img/ecdf.png?raw=true" width="400" height="250">
+</p>
 
 In order to answer the question "are the values normally distributed?" you can use method `->are_normal( )`
 
