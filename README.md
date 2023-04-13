@@ -130,13 +130,22 @@ $$\mathrm{skewness} = \frac{n}{(n-1)(n-2)}\frac{\sum\limits_{i=1}^n {(x_i - \bar
 
 ```abap
 DATA(skewness) = prices->skenewss( ). " [3.19] 
-* (positive skewness: right tail is longer, the mass of the distribution is concentrated on the left)
+* positive skewness: right tail is longer, the mass of the distribution is concentrated on the left
 ```
 
 *Kurtosis* is a measure of the tailedness of the distribution of a real random value: higher kurtosis corresponds to greater extremity of outliers
 
-$$\mathrm{kurtosis} = \frac{1}{(n-1)}\frac{\sum\limits_{i=1}^n {(x_i - \bar{x})}^4}{\left[\frac{1}{n-1}\sum\limits_{i=1}^{n} (x_i - \bar{x})^2 \right]^{4/2}}$$
+$$\mathrm{kurtosis} = \frac{1}{(n-1)}\frac{\sum\limits_{i=1}^n {(x_i - \bar{x})}^4}{\left[\frac{1}{n-1}\sum\limits_{i=1}^{n} (x_i - \bar{x})^2 \right]^2}$$
 
 ```abap
 DATA(kurtosis) = prices->kurtosis( ). " [19.18]
+* positive excess kurtosis (kurtosis minus 3): leptokurtic distribution with fatter tails
+```
+
+### Empirical Inference
+
+The *histogram* is a table of couples $(\mathrm{bin}_i, \mathrm{f}_i)$ where $\mathrm{bin}_i$ is the first endpoint of the $i$-th *bin*, i.e. the interval with which the values were partitioned, and $\mathrm{f}_i$ is the $i$-th frequency, i.e. the number of values inside the $i$-th bin.
+
+```abap
+DATA(histogram) = prices->histogram( ).
 ```
