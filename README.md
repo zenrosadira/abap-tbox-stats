@@ -167,7 +167,17 @@ DATA(empirical_dist) = prices->empirical_cdf( ).
 In order to answer the question "are the values normally distributed" you can use method `->are_normal( )`
 
 ```abap
-DATA(normality_test) = prices->are_normal( ).
+DATA(normality_test) = prices->are_normal( ) " [abap_false].
 ```
 
 This method implements the [Jarque-Bera normality test](https://en.wikipedia.org/wiki/Jarque%E2%80%93Bera_test). The $p$-value is an exported parameter and the test is considered passed if $p\mathrm{-value} \le 0.5$.
+
+## Distributions
+
+The following are static methods to generate sample from various distributions
+
+```abap
+DATA(uniform_values) = ztbox_cl_stats=>uniform( low = 1 high = 50 size = 10000 ).
+" Generate a sample of 10000 values from a uniform distribution in the interval [1, 50]
+" default is =>uniform( low = 0 high = 1 size = 1 )
+```
