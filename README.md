@@ -241,7 +241,7 @@ DATA(covariance) = stats->covariance( `LOCCURAM, LUGGWEIGHT` ). " [0.17]
 ```
 
 ## Aggregations
-Each instance method explained so far can be calculated by first perform a group-by with other columns
+Each descriptive statistics explained so far can be calculated by first perform a group-by with other columns
 
 ```abap
 DATA(stats)               = NEW ztbox_cl_stats( sbook ).
