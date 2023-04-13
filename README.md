@@ -142,10 +142,24 @@ DATA(kurtosis) = prices->kurtosis( ). " [19.18]
 * positive excess kurtosis (kurtosis minus 3): leptokurtic distribution with fatter tails
 ```
 
-### Empirical Inference
+## Empirical Inference
 
 The *histogram* is a table of couples $(\mathrm{bin}_i, \mathrm{f}_i)$ where $\mathrm{bin}_i$ is the first endpoint of the $i$-th *bin*, i.e. the interval with which the values were partitioned, and $\mathrm{f}_i$ is the $i$-th frequency, i.e. the number of values inside the $i$-th bin.
 
 ```abap
 DATA(histogram) = prices->histogram( ).
+```
+
+The bins are created using *Freedman-Diaconis rule*: the bins width is $\frac{2\mathrm{iqr}}{\sqrt[3]{n}}$ where $\mathrm{iqr}$ is the interquartile range, and the total number of bins is $\mathrm{floor}\left(\frac{\mathrm{max} - \mathrm{min}}{\mathrm{bin\ width}}\right)$
+
+Dividing each frequency by the total we get an estimate of the probability to draw a value in the corresponding bin, this is the *empirical probability*
+
+```abap
+DATA(empirical_prob) = prices->empiricial_pdf( ).
+```
+
+Similarly, for each distinct value $x$, we can compute the number $\frac{\mathrm{number\ of\ elements\ \le\ x}{n}$, this is the *empirical distribution function*
+
+```abap
+DATA(empirical_dist) = prices->empiricial_cdf( ).
 ```
