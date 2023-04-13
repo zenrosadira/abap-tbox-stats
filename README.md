@@ -213,6 +213,17 @@ DATA(poisson_distribution) = ztbox_cl_stats=>poisson( l = 4 size = 100 ).
 " default is =>poisson( l = `1.0` size = 1 )
 ```
 
+## Feature Scaling
+In some cases can be useful to work with normalized data
+
+```abap
+DATA(normalized_prices) = prices->normalize( ).
+" Each value is transformed subtracting the minimal value and dividing by the range (max - min)
+
+DATA(standardized_prices) = prices->standardize( ).
+" Each value is transformed subtracting the mean and dividing by the standard deviation
+```
+
 ## Joint Variability
 ### Covariance
 In order to compute the sample covariance of two columns call method `->covariance` passing the columns separated by comma
