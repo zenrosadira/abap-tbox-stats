@@ -229,6 +229,12 @@
      <LANGU>E</LANGU>
      <DESCRIPT>TBOX | Stats Exceptions</DESCRIPT>
     </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>_NEXT_FREE_COL</CMPNAME>
+     <SCONAME>R</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Field name</DESCRIPT>
+    </SEOSUBCOTX>
    </DESCRIPTIONS_SUB>
   </asx:values>
  </asx:abap>

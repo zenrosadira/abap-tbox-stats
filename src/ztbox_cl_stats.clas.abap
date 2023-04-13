@@ -20,551 +20,545 @@
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
-
 **********************************************************************
+class ZTBOX_CL_STATS definition
+  public
+  final
+  create public .
 
-CLASS ztbox_cl_stats DEFINITION
-  PUBLIC
-  FINAL
-  CREATE PUBLIC .
+public section.
 
-  PUBLIC SECTION.
-
-    TYPES:
-      ty_ints TYPE TABLE OF i WITH DEFAULT KEY .
-    TYPES:
-      ty_floats TYPE TABLE OF f WITH DEFAULT KEY .
-    TYPES:
-      BEGIN OF ty_values,
+  types:
+    ty_ints TYPE TABLE OF i WITH DEFAULT KEY .
+  types:
+    ty_floats TYPE TABLE OF f WITH DEFAULT KEY .
+  types:
+    BEGIN OF ty_values,
         x TYPE string,
         y TYPE string,
       END OF ty_values .
-    TYPES:
-      ty_values_t TYPE TABLE OF ty_values WITH DEFAULT KEY .
-    TYPES:
-      BEGIN OF ty_edist,
+  types:
+    ty_values_t TYPE TABLE OF ty_values WITH DEFAULT KEY .
+  types:
+    BEGIN OF ty_edist,
         x TYPE string,
         y TYPE f,
       END OF ty_edist .
-    TYPES:
-      ty_edist_t TYPE TABLE OF ty_edist WITH DEFAULT KEY .
-    TYPES:
-      BEGIN OF ty_bin,
+  types:
+    ty_edist_t TYPE TABLE OF ty_edist WITH DEFAULT KEY .
+  types:
+    BEGIN OF ty_bin,
         x TYPE f,
         y TYPE f,
       END OF ty_bin .
-    TYPES:
-      ty_bins TYPE TABLE OF ty_bin WITH DEFAULT KEY .
-    TYPES:
-      BEGIN OF ty_hist,
+  types:
+    ty_bins TYPE TABLE OF ty_bin WITH DEFAULT KEY .
+  types:
+    BEGIN OF ty_hist,
         x TYPE string,
         y TYPE i,
       END OF ty_hist .
-    TYPES:
-      ty_hist_t TYPE TABLE OF ty_hist WITH DEFAULT KEY .
+  types:
+    ty_hist_t TYPE TABLE OF ty_hist WITH DEFAULT KEY .
 
-    CLASS-METHODS class_constructor .
-    METHODS constructor
-      IMPORTING
-        !table TYPE ANY TABLE
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS standardize
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE ty_floats
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS normalize
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE ty_floats
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS count
-      RETURNING
-        VALUE(r) TYPE i .
-    METHODS count_not_initial
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE i
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS count_distinct
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE i
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS interquartile_range
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE string
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS third_quartile
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE string
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS second_quartile
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE string
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS first_quartile
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE string
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS dispersion_index
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE string
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS coefficient_variation
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE string
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS standard_deviation
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE string
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS kurtosis
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE string
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS skewness
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE string
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS variance
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE string
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS median
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE string
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS quadratic_mean
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE string
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS harmonic_mean
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE string
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS geometric_mean
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE string
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS mad_median
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE string
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS mad_mean
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE string
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS mean
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE string
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS sum
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE string
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS max
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE string
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS range
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE string
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS min
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE string
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS _num_distinct
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE string_table
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS _cat_distinct
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE string_table
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS distinct
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE string_table
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS group_by
-      IMPORTING
-        !grouping TYPE string
-      RETURNING
-        VALUE(r)  TYPE REF TO ztbox_cl_stats_group
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS outliers
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE string_table
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS histogram
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE ty_hist_t
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS empirical_pdf
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE ty_values_t
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS empirical_cdf
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE ty_edist_t
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS correlation
-      IMPORTING
-        !cols    TYPE string
-      RETURNING
-        VALUE(r) TYPE string
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS covariance
-      IMPORTING
-        !cols    TYPE string
-      RETURNING
-        VALUE(r) TYPE string
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    CLASS-METHODS standard
-      IMPORTING
-        !size    TYPE i DEFAULT 1
-      RETURNING
-        VALUE(r) TYPE ty_floats
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    CLASS-METHODS normal
-      IMPORTING
-        !mean     TYPE f DEFAULT 0
-        !variance TYPE f DEFAULT 1
-        !size     TYPE i DEFAULT 1
-      RETURNING
-        VALUE(r)  TYPE ty_floats
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    CLASS-METHODS binomial
-      IMPORTING
-        !n       TYPE i DEFAULT 2
-        !p       TYPE f DEFAULT `0.5`
-        !size    TYPE i DEFAULT 1
-      RETURNING
-        VALUE(r) TYPE ty_ints
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    CLASS-METHODS geometric
-      IMPORTING
-        !p       TYPE f DEFAULT `0.5`
-        !size    TYPE i DEFAULT 1
-      RETURNING
-        VALUE(r) TYPE ty_ints
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    CLASS-METHODS poisson
-      IMPORTING
-        !l       TYPE f DEFAULT `1.0`
-        !size    TYPE i DEFAULT 1
-      RETURNING
-        VALUE(r) TYPE ty_ints
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    CLASS-METHODS bernoulli
-      IMPORTING
-        !p       TYPE f DEFAULT `0.5`
-        !size    TYPE i DEFAULT 1
-      RETURNING
-        VALUE(r) TYPE ty_ints
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    CLASS-METHODS uniform
-      IMPORTING
-        !low     TYPE f DEFAULT 0
-        !high    TYPE f DEFAULT 1
-        !size    TYPE i DEFAULT 1
-      RETURNING
-        VALUE(r) TYPE ty_floats
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS are_normal
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      EXPORTING
-        !p_value TYPE f
-      RETURNING
-        VALUE(r) TYPE abap_bool
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS col
-      IMPORTING
-        !col     TYPE name_feld
-      RETURNING
-        VALUE(r) TYPE REF TO ztbox_cl_stats
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
+  class-methods CLASS_CONSTRUCTOR .
+  methods CONSTRUCTOR
+    importing
+      !TABLE type ANY TABLE
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods STANDARDIZE
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type TY_FLOATS
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods NORMALIZE
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type TY_FLOATS
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods COUNT
+    returning
+      value(R) type I .
+  methods COUNT_NOT_INITIAL
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type I
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods COUNT_DISTINCT
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type I
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods INTERQUARTILE_RANGE
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type STRING
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods THIRD_QUARTILE
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type STRING
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods SECOND_QUARTILE
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type STRING
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods FIRST_QUARTILE
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type STRING
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods DISPERSION_INDEX
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type STRING
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods COEFFICIENT_VARIATION
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type STRING
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods STANDARD_DEVIATION
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type STRING
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods KURTOSIS
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type STRING
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods SKEWNESS
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type STRING
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods VARIANCE
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type STRING
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods MEDIAN
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type STRING
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods QUADRATIC_MEAN
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type STRING
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods HARMONIC_MEAN
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type STRING
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods GEOMETRIC_MEAN
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type STRING
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods MAD_MEDIAN
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type STRING
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods MAD_MEAN
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type STRING
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods MEAN
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type STRING
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods SUM
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type STRING
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods MAX
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type STRING
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods RANGE
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type STRING
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods MIN
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type STRING
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods _NUM_DISTINCT
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type STRING_TABLE
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods _CAT_DISTINCT
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type STRING_TABLE
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods DISTINCT
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type STRING_TABLE
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods GROUP_BY
+    importing
+      !GROUPING type STRING
+    returning
+      value(R) type ref to ZTBOX_CL_STATS_GROUP
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods OUTLIERS
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type STRING_TABLE
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods HISTOGRAM
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type TY_HIST_T
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods EMPIRICAL_PDF
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type TY_VALUES_T
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods EMPIRICAL_CDF
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type TY_EDIST_T
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods CORRELATION
+    importing
+      !COLS type STRING
+    returning
+      value(R) type STRING
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods COVARIANCE
+    importing
+      !COLS type STRING
+    returning
+      value(R) type STRING
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  class-methods STANDARD
+    importing
+      !SIZE type I default 1
+    returning
+      value(R) type TY_FLOATS
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  class-methods NORMAL
+    importing
+      !MEAN type F default 0
+      !VARIANCE type F default 1
+      !SIZE type I default 1
+    returning
+      value(R) type TY_FLOATS
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  class-methods BINOMIAL
+    importing
+      !N type I default 2
+      !P type F default `0.5`
+      !SIZE type I default 1
+    returning
+      value(R) type TY_INTS
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  class-methods GEOMETRIC
+    importing
+      !P type F default `0.5`
+      !SIZE type I default 1
+    returning
+      value(R) type TY_INTS
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  class-methods POISSON
+    importing
+      !L type F default `1.0`
+      !SIZE type I default 1
+    returning
+      value(R) type TY_INTS
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  class-methods BERNOULLI
+    importing
+      !P type F default `0.5`
+      !SIZE type I default 1
+    returning
+      value(R) type TY_INTS
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  class-methods UNIFORM
+    importing
+      !LOW type F default 0
+      !HIGH type F default 1
+      !SIZE type I default 1
+    returning
+      value(R) type TY_FLOATS
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods ARE_NORMAL
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+      !ALPHA type F default `0.5`
+    exporting
+      !P_VALUE type F
+    returning
+      value(R) type ABAP_BOOL
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods COL
+    importing
+      !COL type NAME_FELD
+    returning
+      value(R) type ref to ZTBOX_CL_STATS
+    raising
+      resumable(ZCX_TBOX_STATS) .
   PROTECTED SECTION.
-  PRIVATE SECTION.
+private section.
 
-    TYPES:
-      BEGIN OF ty_buffers,
+  types:
+    BEGIN OF ty_buffers,
         col    TYPE name_feld,
         object TYPE string,
         data   TYPE REF TO data,
       END OF ty_buffers .
-    TYPES:
-      ty_buffers_t TYPE TABLE OF ty_buffers .
-    TYPES:
-      BEGIN OF ty_float_value,
+  types:
+    ty_buffers_t TYPE TABLE OF ty_buffers .
+  types:
+    BEGIN OF ty_float_value,
         ix    TYPE i,
         value TYPE f,
       END OF ty_float_value .
-    TYPES:
-      ty_float_values TYPE TABLE OF ty_float_value WITH DEFAULT KEY .
-    TYPES:
-      BEGIN OF ty_string_value,
+  types:
+    ty_float_values TYPE TABLE OF ty_float_value WITH DEFAULT KEY .
+  types:
+    BEGIN OF ty_string_value,
         ix    TYPE i,
         value TYPE string,
       END OF ty_string_value .
-    TYPES:
-      ty_string_values TYPE TABLE OF ty_string_value WITH DEFAULT KEY .
-    TYPES:
-      BEGIN OF ty_values_indexed,
+  types:
+    ty_string_values TYPE TABLE OF ty_string_value WITH DEFAULT KEY .
+  types:
+    BEGIN OF ty_values_indexed,
         ix    TYPE i,
         value TYPE f,
       END OF ty_values_indexed .
-    TYPES:
-      ty_values_indexed_t TYPE TABLE OF ty_values_indexed WITH DEFAULT KEY .
-    TYPES:
-      BEGIN OF ty_num_value,
+  types:
+    ty_values_indexed_t TYPE TABLE OF ty_values_indexed WITH DEFAULT KEY .
+  types:
+    BEGIN OF ty_num_value,
         column TYPE name_feld,
         elem   TYPE REF TO cl_abap_elemdescr,
         values TYPE ty_float_values,
       END OF ty_num_value .
-    TYPES:
-      ty_num_values TYPE TABLE OF ty_num_value WITH DEFAULT KEY .
-    TYPES:
-      BEGIN OF ty_str_value,
+  types:
+    ty_num_values TYPE TABLE OF ty_num_value WITH DEFAULT KEY .
+  types:
+    BEGIN OF ty_str_value,
         column TYPE name_feld,
         elem   TYPE REF TO cl_abap_elemdescr,
         values TYPE ty_string_values,
       END OF ty_str_value .
-    TYPES:
-      ty_str_values TYPE TABLE OF ty_str_value WITH DEFAULT KEY .
-    TYPES:
-      BEGIN OF ty_catalog,
+  types:
+    ty_str_values TYPE TABLE OF ty_str_value WITH DEFAULT KEY .
+  types:
+    BEGIN OF ty_catalog,
         column TYPE name_feld,
         elem   TYPE REF TO cl_abap_elemdescr,
         values TYPE TABLE OF ty_values_indexed WITH DEFAULT KEY,
       END OF ty_catalog .
-    TYPES:
-      ty_catalog_t TYPE TABLE OF ty_catalog WITH DEFAULT KEY .
+  types:
+    ty_catalog_t TYPE TABLE OF ty_catalog WITH DEFAULT KEY .
 
-    DATA _data TYPE REF TO data .
-    CLASS-DATA:
-      _numerical_types TYPE RANGE OF abap_typekind .
-    DATA _components TYPE abap_component_tab .
-    DATA _numerical_values TYPE ty_num_values .
-    DATA _categorial_values TYPE ty_str_values .
-    DATA _table_line TYPE abap_bool .
-    DATA _buffers TYPE ty_buffers_t .
+  data _DATA type ref to DATA .
+  class-data:
+    _numerical_types TYPE RANGE OF abap_typekind .
+  data _COMPONENTS type ABAP_COMPONENT_TAB .
+  data _NUMERICAL_VALUES type TY_NUM_VALUES .
+  data _CATEGORIAL_VALUES type TY_STR_VALUES .
+  data _TABLE_LINE type ABAP_BOOL .
+  data _BUFFERS type TY_BUFFERS_T .
 
-    CLASS-METHODS _set_numerical_types .
-    METHODS _create_bins
-      IMPORTING
-        !col     TYPE name_feld
-      RETURNING
-        VALUE(r) TYPE ty_bins
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS _set_values
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS _get_values
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE ty_string_values .
-    METHODS _get_cat_values
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE ty_string_values .
-    METHODS _get_num_values
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-      RETURNING
-        VALUE(r) TYPE ty_float_values .
-    METHODS _create_table_like
-      IMPORTING
-        !col     TYPE name_feld
-      RETURNING
-        VALUE(r) TYPE REF TO data .
-    METHODS _create_data_like
-      IMPORTING
-        !col     TYPE name_feld
-      RETURNING
-        VALUE(r) TYPE REF TO data .
-    CLASS-METHODS gamma
-      IMPORTING
-        !i       TYPE f
-      RETURNING
-        VALUE(r) TYPE f .
-    METHODS _check_col
-      IMPORTING
-        !col TYPE name_feld DEFAULT `TABLE_LINE`
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS _check_cat_col
-      IMPORTING
-        !col TYPE name_feld DEFAULT `TABLE_LINE`
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS _check_num_col
-      IMPORTING
-        !col TYPE name_feld DEFAULT `TABLE_LINE`
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS _set_components
-      IMPORTING
-        !table TYPE ANY TABLE
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    CLASS-METHODS _unique
-      IMPORTING
-        !tab     TYPE ty_floats
-      RETURNING
-        VALUE(r) TYPE f .
-    CLASS-METHODS _check_size
-      IMPORTING
-        !s TYPE i
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    CLASS-METHODS _check_sigma
-      IMPORTING
-        !s TYPE f
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    CLASS-METHODS _check_lambda
-      IMPORTING
-        !l TYPE f
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    CLASS-METHODS _check_n
-      IMPORTING
-        !n TYPE i
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    CLASS-METHODS _check_p
-      IMPORTING
-        !p TYPE f
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS _add_to_buffer
-      IMPORTING
-        !col    TYPE name_feld DEFAULT `TABLE_LINE`
-        !object TYPE string
-        !data   TYPE any .
-    METHODS _bufferized
-      IMPORTING
-        !col     TYPE name_feld DEFAULT `TABLE_LINE`
-        !object  TYPE string
-      RETURNING
-        VALUE(r) TYPE abap_bool .
-    METHODS _get_from_buffer
-      IMPORTING
-        !col    TYPE name_feld DEFAULT `TABLE_LINE`
-        !object TYPE string
-      EXPORTING
-        !data   TYPE any .
+  class-methods _SET_NUMERICAL_TYPES .
+  methods _CREATE_BINS
+    importing
+      !COL type NAME_FELD
+    returning
+      value(R) type TY_BINS
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods _SET_VALUES
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods _GET_VALUES
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type TY_STRING_VALUES .
+  methods _GET_CAT_VALUES
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type TY_STRING_VALUES .
+  methods _GET_NUM_VALUES
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    returning
+      value(R) type TY_FLOAT_VALUES .
+  methods _CREATE_TABLE_LIKE
+    importing
+      !COL type NAME_FELD
+    returning
+      value(R) type ref to DATA .
+  methods _CREATE_DATA_LIKE
+    importing
+      !COL type NAME_FELD
+    returning
+      value(R) type ref to DATA .
+  methods _CHECK_COL
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods _CHECK_CAT_COL
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods _CHECK_NUM_COL
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods _SET_COMPONENTS
+    importing
+      !TABLE type ANY TABLE
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  class-methods _UNIQUE
+    importing
+      !TAB type TY_FLOATS
+    returning
+      value(R) type F .
+  class-methods _CHECK_SIZE
+    importing
+      !S type I
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  class-methods _CHECK_SIGMA
+    importing
+      !S type F
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  class-methods _CHECK_LAMBDA
+    importing
+      !L type F
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  class-methods _CHECK_N
+    importing
+      !N type I
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  class-methods _CHECK_P
+    importing
+      !P type F
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods _ADD_TO_BUFFER
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+      !OBJECT type STRING
+      !DATA type ANY .
+  methods _BUFFERIZED
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+      !OBJECT type STRING
+    returning
+      value(R) type ABAP_BOOL .
+  methods _GET_FROM_BUFFER
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+      !OBJECT type STRING
+    exporting
+      !DATA type ANY .
 ENDCLASS.
 
 
@@ -589,7 +583,7 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
 
     p_value = exp( ( `-1.0` ) * jb / `2.0` ).
 
-    r = xsdbool( p_value > `0.05` ).
+    r = xsdbool( p_value > alpha ).
 
   ENDMETHOD.
 
@@ -888,17 +882,6 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
     r = <val> = ( values[ left_ix ]-value + values[ right_ix ]-value ) / 2.
 
     _add_to_buffer( col = col object = `FQR` data = r ).
-
-  ENDMETHOD.
-
-
-  METHOD gamma.
-
-    r = sqrt( 2 * acos( -1 ) * i ) * ( ( i / exp( 1 ) ) ** i ) * ( ( i * sinh( 1 / i ) ) ** ( i / 2 ) ).
-
-    r = r * exp( ( 7 / 324 ) * ( 1 / ( ( i ** 3 ) * ( 35 * ( i ** 2 ) + 33 ) ) ) ).
-
-    r = r / i.
 
   ENDMETHOD.
 

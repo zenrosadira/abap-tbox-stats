@@ -277,38 +277,42 @@ public section.
     raising
       resumable(ZCX_TBOX_STATS) .
   PROTECTED SECTION.
-  PRIVATE SECTION.
+private section.
 
-    TYPES:
-      BEGIN OF ty_stats,
+  types:
+    BEGIN OF ty_stats,
         group_by TYPE TABLE OF ty_group WITH DEFAULT KEY,
         stats    TYPE REF TO ztbox_cl_stats,
       END OF ty_stats .
-    TYPES:
-      ty_stats_t TYPE TABLE OF ty_stats .
+  types:
+    ty_stats_t TYPE TABLE OF ty_stats .
 
-    DATA _data TYPE REF TO data .
-    DATA _temp TYPE REF TO data .
-    DATA _grouping TYPE string_table .
-    DATA _group_stats TYPE ty_stats_t .
+  data _DATA type ref to DATA .
+  data _TEMP type ref to DATA .
+  data _GROUPING type STRING_TABLE .
+  data _GROUP_STATS type TY_STATS_T .
 
-    METHODS _prepare .
-    METHODS _get_group_value
-      IMPORTING
-        !row     TYPE any
-      RETURNING
-        VALUE(r) TYPE ty_group_t .
-    METHODS _group_to_tab
-      IMPORTING
-        !agg TYPE ty_aggregation_t
-        !col TYPE name_feld
-      EXPORTING
-        !tab TYPE ANY TABLE
-      RAISING
-        RESUMABLE(zcx_tbox_stats) .
-    METHODS _prepare_stats
-      RAISING
-        RESUMABLE(zcx_tbox_stats).
+  methods _GET_GROUP_VALUE
+    importing
+      !ROW type ANY
+    returning
+      value(R) type TY_GROUP_T .
+  methods _GROUP_TO_TAB
+    importing
+      !AGG type TY_AGGREGATION_T
+      !COL type NAME_FELD
+    exporting
+      !TAB type ANY TABLE
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods _PREPARE_STATS
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods _NEXT_FREE_COL
+    importing
+      !TAB type ANY TABLE
+    returning
+      value(R) type NAME_FELD .
 ENDCLASS.
 
 
@@ -320,13 +324,13 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
 
     r = VALUE #( FOR group IN _group_stats
       ( group_by  = group-group_by
-        value     = group-stats->are_normal( col ) ) ).
+        value     = group-stats->are_normal( col = col ) ) ).
 
     IF e_result IS SUPPLIED.
       _group_to_tab(
         EXPORTING
           agg = r
-          col = `ARE_NORMAL`
+          col = _next_free_col( e_result )
         IMPORTING
           tab = e_result ).
     ENDIF.
@@ -344,7 +348,7 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
       _group_to_tab(
         EXPORTING
           agg = r
-          col = `COEFFICIENT_VARIATION`
+          col = _next_free_col( e_result )
         IMPORTING
           tab = e_result ).
     ENDIF.
@@ -385,7 +389,7 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
       _group_to_tab(
         EXPORTING
           agg = r
-          col = `CORRELATION`
+          col = _next_free_col( e_result )
         IMPORTING
           tab = e_result ).
     ENDIF.
@@ -403,7 +407,7 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
       _group_to_tab(
         EXPORTING
           agg = r
-          col = `COUNT`
+          col = _next_free_col( e_result )
         IMPORTING
           tab = e_result ).
     ENDIF.
@@ -421,7 +425,7 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
       _group_to_tab(
         EXPORTING
           agg = r
-          col = `COUNT`
+          col = _next_free_col( e_result )
         IMPORTING
           tab = e_result ).
     ENDIF.
@@ -439,7 +443,7 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
       _group_to_tab(
         EXPORTING
           agg = r
-          col = `COUNT`
+          col = _next_free_col( e_result )
         IMPORTING
           tab = e_result ).
     ENDIF.
@@ -457,7 +461,7 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
       _group_to_tab(
         EXPORTING
           agg = r
-          col = `COVARIANCE`
+          col = _next_free_col( e_result )
         IMPORTING
           tab = e_result ).
     ENDIF.
@@ -475,7 +479,7 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
       _group_to_tab(
         EXPORTING
           agg = r
-          col = `DISPERSION_INDEX`
+          col = _next_free_col( e_result )
         IMPORTING
           tab = e_result ).
     ENDIF.
@@ -493,7 +497,7 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
       _group_to_tab(
         EXPORTING
           agg = r
-          col = `FIRST_QUARTILE`
+          col = _next_free_col( e_result )
         IMPORTING
           tab = e_result ).
     ENDIF.
@@ -511,7 +515,7 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
       _group_to_tab(
         EXPORTING
           agg = r
-          col = `GEOMETRIC_MEAN`
+          col = _next_free_col( e_result )
         IMPORTING
           tab = e_result ).
     ENDIF.
@@ -529,7 +533,7 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
       _group_to_tab(
         EXPORTING
           agg = r
-          col = `HARMONIC_MEAN`
+          col = _next_free_col( e_result )
         IMPORTING
           tab = e_result ).
     ENDIF.
@@ -547,7 +551,7 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
       _group_to_tab(
         EXPORTING
           agg = r
-          col = `INTERQUARTILE_RANGE`
+          col = _next_free_col( e_result )
         IMPORTING
           tab = e_result ).
     ENDIF.
@@ -565,7 +569,7 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
       _group_to_tab(
         EXPORTING
           agg = r
-          col = `KURTOSIS`
+          col = _next_free_col( e_result )
         IMPORTING
           tab = e_result ).
     ENDIF.
@@ -583,7 +587,7 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
       _group_to_tab(
         EXPORTING
           agg = r
-          col = `MAD_MEAN`
+          col = _next_free_col( e_result )
         IMPORTING
           tab = e_result ).
     ENDIF.
@@ -601,7 +605,7 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
       _group_to_tab(
         EXPORTING
           agg = r
-          col = `MAD_MEDIAN`
+          col = _next_free_col( e_result )
         IMPORTING
           tab = e_result ).
     ENDIF.
@@ -619,7 +623,7 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
       _group_to_tab(
         EXPORTING
           agg = r
-          col = `MAX`
+          col = _next_free_col( e_result )
         IMPORTING
           tab = e_result ).
     ENDIF.
@@ -637,7 +641,7 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
       _group_to_tab(
         EXPORTING
           agg = r
-          col = `MEAN`
+          col = _next_free_col( e_result )
         IMPORTING
           tab = e_result ).
     ENDIF.
@@ -655,7 +659,7 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
       _group_to_tab(
         EXPORTING
           agg = r
-          col = `MEDIAN`
+          col = _next_free_col( e_result )
         IMPORTING
           tab = e_result ).
     ENDIF.
@@ -673,7 +677,7 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
       _group_to_tab(
         EXPORTING
           agg = r
-          col = `MIN`
+          col = _next_free_col( e_result )
         IMPORTING
           tab = e_result ).
     ENDIF.
@@ -691,7 +695,7 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
       _group_to_tab(
         EXPORTING
           agg = r
-          col = `QUADRATIC_MEAN`
+          col = _next_free_col( e_result )
         IMPORTING
           tab = e_result ).
     ENDIF.
@@ -709,7 +713,7 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
       _group_to_tab(
         EXPORTING
           agg = r
-          col = `RANGE`
+          col = _next_free_col( e_result )
         IMPORTING
           tab = e_result ).
     ENDIF.
@@ -727,7 +731,7 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
       _group_to_tab(
         EXPORTING
           agg = r
-          col = `SECOND_QUARTILE`
+          col = _next_free_col( e_result )
         IMPORTING
           tab = e_result ).
     ENDIF.
@@ -745,7 +749,7 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
       _group_to_tab(
         EXPORTING
           agg = r
-          col = `SKEWNESS`
+          col = _next_free_col( e_result )
         IMPORTING
           tab = e_result ).
     ENDIF.
@@ -763,7 +767,7 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
       _group_to_tab(
         EXPORTING
           agg = r
-          col = `STANDARD_DEVIATION`
+          col = _next_free_col( e_result )
         IMPORTING
           tab = e_result ).
     ENDIF.
@@ -781,7 +785,7 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
       _group_to_tab(
         EXPORTING
           agg = r
-          col = `SUM`
+          col = _next_free_col( e_result )
         IMPORTING
           tab = e_result ).
     ENDIF.
@@ -799,7 +803,7 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
       _group_to_tab(
         EXPORTING
           agg = r
-          col = `THIRD_QUARTILE`
+          col = _next_free_col( e_result )
         IMPORTING
           tab = e_result ).
     ENDIF.
@@ -817,7 +821,7 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
       _group_to_tab(
         EXPORTING
           agg = r
-          col = `VARIANCE`
+          col = _next_free_col( e_result )
         IMPORTING
           tab = e_result ).
     ENDIF.
@@ -870,18 +874,19 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD _prepare.
+  METHOD _next_free_col.
 
-    FIELD-SYMBOLS <tab> TYPE STANDARD TABLE.
-    ASSIGN _data->* TO <tab>.
+    DATA(tab_desc)  = CAST cl_abap_tabledescr( cl_abap_typedescr=>describe_by_data( tab ) ).
+    DATA(line_desc) = CAST cl_abap_structdescr( tab_desc->get_table_line_type( ) ).
 
-    CLEAR _temp.
-    CREATE DATA _temp LIKE <tab>.
+    LOOP AT line_desc->get_included_view( ) INTO DATA(comp).
 
-    FIELD-SYMBOLS <temp> TYPE STANDARD TABLE.
-    ASSIGN _temp->* TO <temp>.
+      CHECK NOT line_exists( _grouping[ table_line = comp-name ] ).
 
-    <temp> = <tab>.
+      r = comp-name.
+      RETURN.
+
+    ENDLOOP.
 
   ENDMETHOD.
 
@@ -896,11 +901,9 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
     DATA groups TYPE TABLE OF ty_values WITH DEFAULT KEY.
     DATA group  LIKE LINE OF groups.
 
-    _prepare( ).
-
     FIELD-SYMBOLS <tab> TYPE STANDARD TABLE.
     FIELD-SYMBOLS <grp> TYPE STANDARD TABLE.
-    ASSIGN _temp->* TO <tab>.
+    ASSIGN _data->* TO <tab>.
 
     LOOP AT <tab> ASSIGNING FIELD-SYMBOL(<row>).
 
@@ -939,8 +942,6 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
         ) TO _group_stats.
 
     ENDLOOP.
-
-    CLEAR _temp.
 
   ENDMETHOD.
 ENDCLASS.
