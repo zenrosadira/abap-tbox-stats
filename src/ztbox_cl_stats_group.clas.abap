@@ -44,6 +44,15 @@ public section.
       value(R) type TY_AGGREGATION_T
     raising
       resumable(ZCX_TBOX_STATS) .
+  methods COUNT_NOT_INITIAL
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    exporting
+      !E_RESULT type ANY TABLE
+    returning
+      value(R) type TY_AGGREGATION_T
+    raising
+      resumable(ZCX_TBOX_STATS) .
   methods KURTOSIS
     importing
       !COL type NAME_FELD default `TABLE_LINE`
@@ -72,6 +81,15 @@ public section.
     raising
       resumable(ZCX_TBOX_STATS) .
   methods VARIANCE
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    exporting
+      !E_RESULT type ANY TABLE
+    returning
+      value(R) type TY_AGGREGATION_T
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods ARE_NORMAL
     importing
       !COL type NAME_FELD default `TABLE_LINE`
     exporting
@@ -125,6 +143,33 @@ public section.
       value(R) type TY_AGGREGATION_T
     raising
       resumable(ZCX_TBOX_STATS) .
+  methods COEFFICIENT_VARIATION
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    exporting
+      !E_RESULT type ANY TABLE
+    returning
+      value(R) type TY_AGGREGATION_T
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods DISPERSION_INDEX
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    exporting
+      !E_RESULT type ANY TABLE
+    returning
+      value(R) type TY_AGGREGATION_T
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods QUADRATIC_MEAN
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    exporting
+      !E_RESULT type ANY TABLE
+    returning
+      value(R) type TY_AGGREGATION_T
+    raising
+      resumable(ZCX_TBOX_STATS) .
   methods GEOMETRIC_MEAN
     importing
       !COL type NAME_FELD default `TABLE_LINE`
@@ -135,6 +180,24 @@ public section.
     raising
       resumable(ZCX_TBOX_STATS) .
   methods HARMONIC_MEAN
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    exporting
+      !E_RESULT type ANY TABLE
+    returning
+      value(R) type TY_AGGREGATION_T
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods MAD_MEAN
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    exporting
+      !E_RESULT type ANY TABLE
+    returning
+      value(R) type TY_AGGREGATION_T
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods MAD_MEDIAN
     importing
       !COL type NAME_FELD default `TABLE_LINE`
     exporting
@@ -161,9 +224,36 @@ public section.
       value(R) type TY_AGGREGATION_T
     raising
       resumable(ZCX_TBOX_STATS) .
+  methods RANGE
+    importing
+      !COL type NAME_FELD default `TABLE_LINE`
+    exporting
+      !E_RESULT type ANY TABLE
+    returning
+      value(R) type TY_AGGREGATION_T
+    raising
+      resumable(ZCX_TBOX_STATS) .
   methods MAX
     importing
       !COL type NAME_FELD default `TABLE_LINE`
+    exporting
+      !E_RESULT type ANY TABLE
+    returning
+      value(R) type TY_AGGREGATION_T
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods COVARIANCE
+    importing
+      !COLS type STRING default `TABLE_LINE`
+    exporting
+      !E_RESULT type ANY TABLE
+    returning
+      value(R) type TY_AGGREGATION_T
+    raising
+      resumable(ZCX_TBOX_STATS) .
+  methods CORRELATION
+    importing
+      !COLS type STRING default `TABLE_LINE`
     exporting
       !E_RESULT type ANY TABLE
     returning
@@ -226,6 +316,42 @@ ENDCLASS.
 CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
 
 
+  METHOD ARE_NORMAL.
+
+    r = VALUE #( FOR group IN _group_stats
+      ( group_by  = group-group_by
+        value     = group-stats->are_normal( col ) ) ).
+
+    IF e_result IS SUPPLIED.
+      _group_to_tab(
+        EXPORTING
+          agg = r
+          col = `ARE_NORMAL`
+        IMPORTING
+          tab = e_result ).
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD COEFFICIENT_VARIATION.
+
+    r = VALUE #( FOR group IN _group_stats
+      ( group_by  = group-group_by
+        value     = group-stats->coefficient_variation( col ) ) ).
+
+    IF e_result IS SUPPLIED.
+      _group_to_tab(
+        EXPORTING
+          agg = r
+          col = `COEFFICIENT_VARIATION`
+        IMPORTING
+          tab = e_result ).
+    ENDIF.
+
+  ENDMETHOD.
+
+
   METHOD col.
 
     r = NEW #( grouping = _grouping data = _data ).
@@ -245,6 +371,24 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
     _grouping = VALUE #( FOR _grp IN grouping ( condense( _grp ) ) ).
 
     _prepare_stats( ).
+
+  ENDMETHOD.
+
+
+  METHOD CORRELATION.
+
+    r = VALUE #( FOR group IN _group_stats
+      ( group_by  = group-group_by
+        value     = group-stats->correlation( cols ) ) ).
+
+    IF e_result IS SUPPLIED.
+      _group_to_tab(
+        EXPORTING
+          agg = r
+          col = `CORRELATION`
+        IMPORTING
+          tab = e_result ).
+    ENDIF.
 
   ENDMETHOD.
 
@@ -285,6 +429,60 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD COUNT_NOT_INITIAL.
+
+    r = VALUE #( FOR group IN _group_stats
+      ( group_by  = group-group_by
+        value     = group-stats->count_not_initial( col ) ) ).
+
+    IF e_result IS SUPPLIED.
+      _group_to_tab(
+        EXPORTING
+          agg = r
+          col = `COUNT`
+        IMPORTING
+          tab = e_result ).
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD COVARIANCE.
+
+    r = VALUE #( FOR group IN _group_stats
+      ( group_by  = group-group_by
+        value     = group-stats->covariance( cols ) ) ).
+
+    IF e_result IS SUPPLIED.
+      _group_to_tab(
+        EXPORTING
+          agg = r
+          col = `COVARIANCE`
+        IMPORTING
+          tab = e_result ).
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD DISPERSION_INDEX.
+
+    r = VALUE #( FOR group IN _group_stats
+      ( group_by  = group-group_by
+        value     = group-stats->dispersion_index( col ) ) ).
+
+    IF e_result IS SUPPLIED.
+      _group_to_tab(
+        EXPORTING
+          agg = r
+          col = `DISPERSION_INDEX`
+        IMPORTING
+          tab = e_result ).
+    ENDIF.
+
+  ENDMETHOD.
+
+
   METHOD first_quartile.
 
     r = VALUE #( FOR group IN _group_stats
@@ -303,7 +501,7 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD geometric_mean.
+  METHOD GEOMETRIC_MEAN.
 
     r = VALUE #( FOR group IN _group_stats
       ( group_by  = group-group_by
@@ -375,6 +573,42 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD MAD_MEAN.
+
+    r = VALUE #( FOR group IN _group_stats
+      ( group_by  = group-group_by
+        value     = group-stats->mad_mean( col ) ) ).
+
+    IF e_result IS SUPPLIED.
+      _group_to_tab(
+        EXPORTING
+          agg = r
+          col = `MAD_MEAN`
+        IMPORTING
+          tab = e_result ).
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD mad_median.
+
+    r = VALUE #( FOR group IN _group_stats
+      ( group_by  = group-group_by
+        value     = group-stats->mad_median( col ) ) ).
+
+    IF e_result IS SUPPLIED.
+      _group_to_tab(
+        EXPORTING
+          agg = r
+          col = `MAD_MEDIAN`
+        IMPORTING
+          tab = e_result ).
+    ENDIF.
+
+  ENDMETHOD.
+
+
   METHOD max.
 
     r = VALUE #( FOR group IN _group_stats
@@ -385,7 +619,7 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
       _group_to_tab(
         EXPORTING
           agg = r
-          col = col
+          col = `MAX`
         IMPORTING
           tab = e_result ).
     ENDIF.
@@ -403,7 +637,7 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
       _group_to_tab(
         EXPORTING
           agg = r
-          col = col
+          col = `MEAN`
         IMPORTING
           tab = e_result ).
     ENDIF.
@@ -439,7 +673,43 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
       _group_to_tab(
         EXPORTING
           agg = r
-          col = col
+          col = `MIN`
+        IMPORTING
+          tab = e_result ).
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD QUADRATIC_MEAN.
+
+    r = VALUE #( FOR group IN _group_stats
+      ( group_by  = group-group_by
+        value     = group-stats->quadratic_mean( col ) ) ).
+
+    IF e_result IS SUPPLIED.
+      _group_to_tab(
+        EXPORTING
+          agg = r
+          col = `QUADRATIC_MEAN`
+        IMPORTING
+          tab = e_result ).
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD range.
+
+    r = VALUE #( FOR group IN _group_stats
+      ( group_by  = group-group_by
+        value     = group-stats->range( col ) ) ).
+
+    IF e_result IS SUPPLIED.
+      _group_to_tab(
+        EXPORTING
+          agg = r
+          col = `RANGE`
         IMPORTING
           tab = e_result ).
     ENDIF.
@@ -511,7 +781,7 @@ CLASS ZTBOX_CL_STATS_GROUP IMPLEMENTATION.
       _group_to_tab(
         EXPORTING
           agg = r
-          col = col
+          col = `SUM`
         IMPORTING
           tab = e_result ).
     ENDIF.

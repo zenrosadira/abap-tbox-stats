@@ -1,3 +1,28 @@
+**********************************************************************
+* The MIT License (MIT)
+*
+* Copyright (c) 2023 Marco Marrone
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in all
+* copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+* SOFTWARE.
+
+**********************************************************************
+
 CLASS ztbox_cl_stats DEFINITION
   PUBLIC
   FINAL
@@ -5,6 +30,8 @@ CLASS ztbox_cl_stats DEFINITION
 
   PUBLIC SECTION.
 
+    TYPES:
+      ty_ints TYPE TABLE OF i WITH DEFAULT KEY .
     TYPES:
       ty_floats TYPE TABLE OF f WITH DEFAULT KEY .
     TYPES:
@@ -14,6 +41,27 @@ CLASS ztbox_cl_stats DEFINITION
       END OF ty_values .
     TYPES:
       ty_values_t TYPE TABLE OF ty_values WITH DEFAULT KEY .
+    TYPES:
+      BEGIN OF ty_edist,
+        x TYPE string,
+        y TYPE f,
+      END OF ty_edist .
+    TYPES:
+      ty_edist_t TYPE TABLE OF ty_edist WITH DEFAULT KEY .
+    TYPES:
+      BEGIN OF ty_bin,
+        x TYPE f,
+        y TYPE f,
+      END OF ty_bin .
+    TYPES:
+      ty_bins TYPE TABLE OF ty_bin WITH DEFAULT KEY .
+    TYPES:
+      BEGIN OF ty_hist,
+        x TYPE string,
+        y TYPE i,
+      END OF ty_hist .
+    TYPES:
+      ty_hist_t TYPE TABLE OF ty_hist WITH DEFAULT KEY .
 
     CLASS-METHODS class_constructor .
     METHODS constructor
@@ -23,12 +71,16 @@ CLASS ztbox_cl_stats DEFINITION
         RESUMABLE(zcx_tbox_stats) .
     METHODS standardize
       IMPORTING
-        !col TYPE name_feld DEFAULT `TABLE_LINE`
+        !col     TYPE name_feld DEFAULT `TABLE_LINE`
+      RETURNING
+        VALUE(r) TYPE ty_floats
       RAISING
         RESUMABLE(zcx_tbox_stats) .
     METHODS normalize
       IMPORTING
-        !col TYPE name_feld DEFAULT `TABLE_LINE`
+        !col     TYPE name_feld DEFAULT `TABLE_LINE`
+      RETURNING
+        VALUE(r) TYPE ty_floats
       RAISING
         RESUMABLE(zcx_tbox_stats) .
     METHODS count
@@ -70,6 +122,20 @@ CLASS ztbox_cl_stats DEFINITION
       RAISING
         RESUMABLE(zcx_tbox_stats) .
     METHODS first_quartile
+      IMPORTING
+        !col     TYPE name_feld DEFAULT `TABLE_LINE`
+      RETURNING
+        VALUE(r) TYPE string
+      RAISING
+        RESUMABLE(zcx_tbox_stats) .
+    METHODS dispersion_index
+      IMPORTING
+        !col     TYPE name_feld DEFAULT `TABLE_LINE`
+      RETURNING
+        VALUE(r) TYPE string
+      RAISING
+        RESUMABLE(zcx_tbox_stats) .
+    METHODS coefficient_variation
       IMPORTING
         !col     TYPE name_feld DEFAULT `TABLE_LINE`
       RETURNING
@@ -132,6 +198,20 @@ CLASS ztbox_cl_stats DEFINITION
         VALUE(r) TYPE string
       RAISING
         RESUMABLE(zcx_tbox_stats) .
+    METHODS mad_median
+      IMPORTING
+        !col     TYPE name_feld DEFAULT `TABLE_LINE`
+      RETURNING
+        VALUE(r) TYPE string
+      RAISING
+        RESUMABLE(zcx_tbox_stats) .
+    METHODS mad_mean
+      IMPORTING
+        !col     TYPE name_feld DEFAULT `TABLE_LINE`
+      RETURNING
+        VALUE(r) TYPE string
+      RAISING
+        RESUMABLE(zcx_tbox_stats) .
     METHODS mean
       IMPORTING
         !col     TYPE name_feld DEFAULT `TABLE_LINE`
@@ -153,11 +233,32 @@ CLASS ztbox_cl_stats DEFINITION
         VALUE(r) TYPE string
       RAISING
         RESUMABLE(zcx_tbox_stats) .
+    METHODS range
+      IMPORTING
+        !col     TYPE name_feld DEFAULT `TABLE_LINE`
+      RETURNING
+        VALUE(r) TYPE string
+      RAISING
+        RESUMABLE(zcx_tbox_stats) .
     METHODS min
       IMPORTING
         !col     TYPE name_feld DEFAULT `TABLE_LINE`
       RETURNING
         VALUE(r) TYPE string
+      RAISING
+        RESUMABLE(zcx_tbox_stats) .
+    METHODS _num_distinct
+      IMPORTING
+        !col     TYPE name_feld DEFAULT `TABLE_LINE`
+      RETURNING
+        VALUE(r) TYPE string_table
+      RAISING
+        RESUMABLE(zcx_tbox_stats) .
+    METHODS _cat_distinct
+      IMPORTING
+        !col     TYPE name_feld DEFAULT `TABLE_LINE`
+      RETURNING
+        VALUE(r) TYPE string_table
       RAISING
         RESUMABLE(zcx_tbox_stats) .
     METHODS distinct
@@ -185,7 +286,7 @@ CLASS ztbox_cl_stats DEFINITION
       IMPORTING
         !col     TYPE name_feld DEFAULT `TABLE_LINE`
       RETURNING
-        VALUE(r) TYPE ty_values_t
+        VALUE(r) TYPE ty_hist_t
       RAISING
         RESUMABLE(zcx_tbox_stats) .
     METHODS empirical_pdf
@@ -199,7 +300,7 @@ CLASS ztbox_cl_stats DEFINITION
       IMPORTING
         !col     TYPE name_feld DEFAULT `TABLE_LINE`
       RETURNING
-        VALUE(r) TYPE ty_values_t
+        VALUE(r) TYPE ty_edist_t
       RAISING
         RESUMABLE(zcx_tbox_stats) .
     METHODS correlation
@@ -220,21 +321,60 @@ CLASS ztbox_cl_stats DEFINITION
       IMPORTING
         !size    TYPE i DEFAULT 1
       RETURNING
-        VALUE(r) TYPE ty_floats .
+        VALUE(r) TYPE ty_floats
+      RAISING
+        RESUMABLE(zcx_tbox_stats) .
     CLASS-METHODS normal
       IMPORTING
         !mean     TYPE f DEFAULT 0
         !variance TYPE f DEFAULT 1
         !size     TYPE i DEFAULT 1
       RETURNING
-        VALUE(r)  TYPE ty_floats .
+        VALUE(r)  TYPE ty_floats
+      RAISING
+        RESUMABLE(zcx_tbox_stats) .
+    CLASS-METHODS binomial
+      IMPORTING
+        !n       TYPE i DEFAULT 2
+        !p       TYPE f DEFAULT `0.5`
+        !size    TYPE i DEFAULT 1
+      RETURNING
+        VALUE(r) TYPE ty_ints
+      RAISING
+        RESUMABLE(zcx_tbox_stats) .
+    CLASS-METHODS geometric
+      IMPORTING
+        !p       TYPE f DEFAULT `0.5`
+        !size    TYPE i DEFAULT 1
+      RETURNING
+        VALUE(r) TYPE ty_ints
+      RAISING
+        RESUMABLE(zcx_tbox_stats) .
+    CLASS-METHODS poisson
+      IMPORTING
+        !l       TYPE f DEFAULT `1.0`
+        !size    TYPE i DEFAULT 1
+      RETURNING
+        VALUE(r) TYPE ty_ints
+      RAISING
+        RESUMABLE(zcx_tbox_stats) .
+    CLASS-METHODS bernoulli
+      IMPORTING
+        !p       TYPE f DEFAULT `0.5`
+        !size    TYPE i DEFAULT 1
+      RETURNING
+        VALUE(r) TYPE ty_ints
+      RAISING
+        RESUMABLE(zcx_tbox_stats) .
     CLASS-METHODS uniform
       IMPORTING
         !low     TYPE f DEFAULT 0
         !high    TYPE f DEFAULT 1
         !size    TYPE i DEFAULT 1
       RETURNING
-        VALUE(r) TYPE ty_floats .
+        VALUE(r) TYPE ty_floats
+      RAISING
+        RESUMABLE(zcx_tbox_stats) .
     METHODS are_normal
       IMPORTING
         !col     TYPE name_feld DEFAULT `TABLE_LINE`
@@ -252,113 +392,179 @@ CLASS ztbox_cl_stats DEFINITION
       RAISING
         RESUMABLE(zcx_tbox_stats) .
   PROTECTED SECTION.
-private section.
+  PRIVATE SECTION.
 
-  types:
-    BEGIN OF ty_float_value,
+    TYPES:
+      BEGIN OF ty_buffers,
+        col    TYPE name_feld,
+        object TYPE string,
+        data   TYPE REF TO data,
+      END OF ty_buffers .
+    TYPES:
+      ty_buffers_t TYPE TABLE OF ty_buffers .
+    TYPES:
+      BEGIN OF ty_float_value,
         ix    TYPE i,
         value TYPE f,
       END OF ty_float_value .
-  types:
-    ty_float_values TYPE TABLE OF ty_float_value WITH DEFAULT KEY .
-  types:
-    BEGIN OF ty_string_value,
+    TYPES:
+      ty_float_values TYPE TABLE OF ty_float_value WITH DEFAULT KEY .
+    TYPES:
+      BEGIN OF ty_string_value,
         ix    TYPE i,
         value TYPE string,
       END OF ty_string_value .
-  types:
-    ty_string_values TYPE TABLE OF ty_string_value WITH DEFAULT KEY .
-  types:
-    BEGIN OF ty_values_indexed,
+    TYPES:
+      ty_string_values TYPE TABLE OF ty_string_value WITH DEFAULT KEY .
+    TYPES:
+      BEGIN OF ty_values_indexed,
         ix    TYPE i,
         value TYPE f,
       END OF ty_values_indexed .
-  types:
-    ty_values_indexed_t TYPE TABLE OF ty_values_indexed WITH DEFAULT KEY .
-  types:
-    BEGIN OF ty_num_value,
+    TYPES:
+      ty_values_indexed_t TYPE TABLE OF ty_values_indexed WITH DEFAULT KEY .
+    TYPES:
+      BEGIN OF ty_num_value,
         column TYPE name_feld,
         elem   TYPE REF TO cl_abap_elemdescr,
         values TYPE ty_float_values,
       END OF ty_num_value .
-  types:
-    ty_num_values TYPE TABLE OF ty_num_value WITH DEFAULT KEY .
-  types:
-    BEGIN OF ty_str_value,
+    TYPES:
+      ty_num_values TYPE TABLE OF ty_num_value WITH DEFAULT KEY .
+    TYPES:
+      BEGIN OF ty_str_value,
         column TYPE name_feld,
         elem   TYPE REF TO cl_abap_elemdescr,
         values TYPE ty_string_values,
       END OF ty_str_value .
-  types:
-    ty_str_values TYPE TABLE OF ty_str_value WITH DEFAULT KEY .
-  types:
-    BEGIN OF ty_catalog,
+    TYPES:
+      ty_str_values TYPE TABLE OF ty_str_value WITH DEFAULT KEY .
+    TYPES:
+      BEGIN OF ty_catalog,
         column TYPE name_feld,
         elem   TYPE REF TO cl_abap_elemdescr,
         values TYPE TABLE OF ty_values_indexed WITH DEFAULT KEY,
       END OF ty_catalog .
-  types:
-    ty_catalog_t TYPE TABLE OF ty_catalog WITH DEFAULT KEY .
+    TYPES:
+      ty_catalog_t TYPE TABLE OF ty_catalog WITH DEFAULT KEY .
 
-  data _DATA type ref to DATA .
-  class-data:
-    _numerical_types TYPE RANGE OF abap_typekind .
-  data _COMPONENTS type ABAP_COMPONENT_TAB .
-  data _NUMERICAL_VALUES type TY_NUM_VALUES .
-  data _CATEGORIAL_VALUES type TY_STR_VALUES .
-  data _TABLE_LINE type ABAP_BOOL .
+    DATA _data TYPE REF TO data .
+    CLASS-DATA:
+      _numerical_types TYPE RANGE OF abap_typekind .
+    DATA _components TYPE abap_component_tab .
+    DATA _numerical_values TYPE ty_num_values .
+    DATA _categorial_values TYPE ty_str_values .
+    DATA _table_line TYPE abap_bool .
+    DATA _buffers TYPE ty_buffers_t .
 
-  class-methods _SET_NUMERICAL_TYPES .
-  methods _CREATE_BINS
-    importing
-      !COL type NAME_FELD
-    returning
-      value(R) type TY_VALUES_T
-    raising
-      resumable(ZCX_TBOX_STATS) .
-  methods _SET_VALUES
-    raising
-      resumable(ZCX_TBOX_STATS) .
-  methods _GET_NUM_VALUES
-    importing
-      !COL type NAME_FELD default `TABLE_LINE`
-    returning
-      value(R) type TY_VALUES_INDEXED_T .
-  methods _CREATE_TABLE_LIKE
-    importing
-      !COL type NAME_FELD
-    returning
-      value(R) type ref to DATA .
-  methods _CREATE_DATA_LIKE
-    importing
-      !COL type NAME_FELD
-    returning
-      value(R) type ref to DATA .
-  class-methods GAMMA
-    importing
-      !I type F
-    returning
-      value(R) type F .
-  methods _CHECK_COL
-    importing
-      !COL type NAME_FELD default `TABLE_LINE`
-    raising
-      resumable(ZCX_TBOX_STATS) .
-  methods _CHECK_CAT_COL
-    importing
-      !COL type NAME_FELD default `TABLE_LINE`
-    raising
-      resumable(ZCX_TBOX_STATS) .
-  methods _CHECK_NUM_COL
-    importing
-      !COL type NAME_FELD default `TABLE_LINE`
-    raising
-      resumable(ZCX_TBOX_STATS) .
-  methods _SET_COMPONENTS
-    importing
-      !TABLE type ANY TABLE
-    raising
-      resumable(ZCX_TBOX_STATS) .
+    CLASS-METHODS _set_numerical_types .
+    METHODS _create_bins
+      IMPORTING
+        !col     TYPE name_feld
+      RETURNING
+        VALUE(r) TYPE ty_bins
+      RAISING
+        RESUMABLE(zcx_tbox_stats) .
+    METHODS _set_values
+      RAISING
+        RESUMABLE(zcx_tbox_stats) .
+    METHODS _get_values
+      IMPORTING
+        !col     TYPE name_feld DEFAULT `TABLE_LINE`
+      RETURNING
+        VALUE(r) TYPE ty_string_values .
+    METHODS _get_cat_values
+      IMPORTING
+        !col     TYPE name_feld DEFAULT `TABLE_LINE`
+      RETURNING
+        VALUE(r) TYPE ty_string_values .
+    METHODS _get_num_values
+      IMPORTING
+        !col     TYPE name_feld DEFAULT `TABLE_LINE`
+      RETURNING
+        VALUE(r) TYPE ty_float_values .
+    METHODS _create_table_like
+      IMPORTING
+        !col     TYPE name_feld
+      RETURNING
+        VALUE(r) TYPE REF TO data .
+    METHODS _create_data_like
+      IMPORTING
+        !col     TYPE name_feld
+      RETURNING
+        VALUE(r) TYPE REF TO data .
+    CLASS-METHODS gamma
+      IMPORTING
+        !i       TYPE f
+      RETURNING
+        VALUE(r) TYPE f .
+    METHODS _check_col
+      IMPORTING
+        !col TYPE name_feld DEFAULT `TABLE_LINE`
+      RAISING
+        RESUMABLE(zcx_tbox_stats) .
+    METHODS _check_cat_col
+      IMPORTING
+        !col TYPE name_feld DEFAULT `TABLE_LINE`
+      RAISING
+        RESUMABLE(zcx_tbox_stats) .
+    METHODS _check_num_col
+      IMPORTING
+        !col TYPE name_feld DEFAULT `TABLE_LINE`
+      RAISING
+        RESUMABLE(zcx_tbox_stats) .
+    METHODS _set_components
+      IMPORTING
+        !table TYPE ANY TABLE
+      RAISING
+        RESUMABLE(zcx_tbox_stats) .
+    CLASS-METHODS _unique
+      IMPORTING
+        !tab     TYPE ty_floats
+      RETURNING
+        VALUE(r) TYPE f .
+    CLASS-METHODS _check_size
+      IMPORTING
+        !s TYPE i
+      RAISING
+        RESUMABLE(zcx_tbox_stats) .
+    CLASS-METHODS _check_sigma
+      IMPORTING
+        !s TYPE f
+      RAISING
+        RESUMABLE(zcx_tbox_stats) .
+    CLASS-METHODS _check_lambda
+      IMPORTING
+        !l TYPE f
+      RAISING
+        RESUMABLE(zcx_tbox_stats) .
+    CLASS-METHODS _check_n
+      IMPORTING
+        !n TYPE i
+      RAISING
+        RESUMABLE(zcx_tbox_stats) .
+    CLASS-METHODS _check_p
+      IMPORTING
+        !p TYPE f
+      RAISING
+        RESUMABLE(zcx_tbox_stats) .
+    METHODS _add_to_buffer
+      IMPORTING
+        !col    TYPE name_feld DEFAULT `TABLE_LINE`
+        !object TYPE string
+        !data   TYPE any .
+    METHODS _bufferized
+      IMPORTING
+        !col     TYPE name_feld DEFAULT `TABLE_LINE`
+        !object  TYPE string
+      RETURNING
+        VALUE(r) TYPE abap_bool .
+    METHODS _get_from_buffer
+      IMPORTING
+        !col    TYPE name_feld DEFAULT `TABLE_LINE`
+        !object TYPE string
+      EXPORTING
+        !data   TYPE any .
 ENDCLASS.
 
 
@@ -367,6 +573,9 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
 
 
   METHOD are_normal.
+**********************************************************************
+*   Jarque-Bera normality test
+**********************************************************************
 
     _check_num_col( col ).
 
@@ -376,7 +585,7 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
     DATA(skew)  = CONV f( skewness( col ) ).
     DATA(kurt)  = CONV f( kurtosis( col ) ).
 
-    DATA(jb) = ( ( total + `1.0` ) / `6.0` ) * ( skew ** 2 + ( ( kurt - `0.0` ) ** 2 ) / `4.0` ).
+    DATA(jb) = ( ( total + `1.0` ) / `6.0` ) * ( skew ** 2 + ( ( kurt - `3.0` ) ** 2 ) / `4.0` ).
 
     p_value = exp( ( `-1.0` ) * jb / `2.0` ).
 
@@ -385,9 +594,53 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD bernoulli.
+
+    _check_p( p ).
+    _check_size( size ).
+
+    DATA(unif) = uniform( size = size ).
+
+    r = VALUE #( FOR u IN unif ( COND #( WHEN u LE p THEN 1 ELSE 0 ) ) ).
+
+  ENDMETHOD.
+
+
+  METHOD binomial.
+
+    _check_p( p ).
+    _check_n( n ).
+    _check_size( size ).
+
+    r = VALUE #( FOR i = 0 UNTIL i = size ( REDUCE f( LET b = bernoulli( size = n p = p ) IN INIT s = 0 FOR x IN b NEXT s = s + x ) ) ).
+
+  ENDMETHOD.
+
+
   METHOD class_constructor.
 
     _set_numerical_types( ).
+
+  ENDMETHOD.
+
+
+  METHOD coefficient_variation.
+
+    IF _bufferized( col = col object = `CV` ).
+      _get_from_buffer( EXPORTING col = col object = `CV` IMPORTING data = r ).
+      RETURN.
+    ENDIF.
+
+    _check_num_col( col ).
+
+    DATA(dev)   = CONV f( standard_deviation( col ) ).
+    DATA(mean)  = CONV f( mean( col ) ).
+
+    CHECK mean IS NOT INITIAL.
+
+    r = dev / mean.
+
+    _add_to_buffer( col = col object = `CV` data = r ).
 
   ENDMETHOD.
 
@@ -439,6 +692,9 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
     DATA(std_dev_1) = CONV f( standard_deviation( condense( col_1 ) ) ).
     DATA(std_dev_2) = CONV f( standard_deviation( condense( col_2 ) ) ).
 
+    CHECK std_dev_1 IS NOT INITIAL.
+    CHECK std_dev_2 IS NOT INITIAL.
+
     r = CONV f( covariance( cols ) ) / ( std_dev_1 * std_dev_2 ).
 
   ENDMETHOD.
@@ -456,7 +712,7 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
 
   METHOD count_distinct.
 
-    _check_num_col( col ).
+    _check_col( col ).
 
     r = lines( distinct( col ) ).
 
@@ -465,9 +721,9 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
 
   METHOD count_not_initial.
 
-    _check_num_col( col ).
+    _check_col( col ).
 
-    DATA(values) = _get_num_values( col ).
+    DATA(values) = _get_values( col ).
 
     DELETE values WHERE value IS INITIAL.
 
@@ -489,62 +745,132 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
     DATA(mean_2)  = CONV f( mean( condense( col_2 ) ) ).
     DATA(total)   = CONV f( count( ) ).
 
-    r = REDUCE f( INIT co = CONV f( 0 ) FOR i = 1 UNTIL i = total + 1 NEXT co = co + val_1[ i ]-value * val_2[ i ]-value - mean_1 * mean_2 ).
+    r = REDUCE f( INIT co = CONV f( 0 ) FOR i = 1 UNTIL i = total + 1 NEXT co = co + val_1[ i ]-value * val_2[ i ]-value - mean_1 * mean_2 ) / ( total - `1.0` ).
 
-    r = r / ( total - `1` ).
+  ENDMETHOD.
+
+
+  METHOD dispersion_index.
+
+    IF _bufferized( col = col object = `DI` ).
+      _get_from_buffer( EXPORTING col = col object = `DI` IMPORTING data = r ).
+      RETURN.
+    ENDIF.
+
+    _check_num_col( col ).
+
+    DATA(var)   = CONV f( variance( col ) ).
+    DATA(mean)  = CONV f( mean( col ) ).
+
+    CHECK mean IS NOT INITIAL.
+
+    r = var / mean.
+
+    _add_to_buffer( col = col object = `DI` data = r ).
 
   ENDMETHOD.
 
 
   METHOD distinct.
 
-    _check_num_col( col ).
+    IF _bufferized( col = col object = `DST` ).
+      _get_from_buffer( EXPORTING col = col object = `DST` IMPORTING data = r ).
+      RETURN.
+    ENDIF.
 
-    DATA(values)    = _get_num_values( col ).
-    DATA(value_ref) = _create_data_like( col ).
-    ASSIGN value_ref->* TO FIELD-SYMBOL(<val>).
+    _check_col( col ).
 
-    SORT values BY value.
-    DELETE ADJACENT DUPLICATES FROM values COMPARING value.
+    r = COND #(
+      WHEN line_exists( _categorial_values[ column = col ] )
+        THEN _cat_distinct( col )
+      WHEN line_exists( _numerical_values[ column = col ] )
+        THEN _num_distinct( col ) ).
 
-    LOOP AT values INTO DATA(val).
-
-      <val> = val-value.
-      APPEND <val> TO r.
-
-    ENDLOOP.
+    _add_to_buffer( col = col object = `DST` data = r ).
 
   ENDMETHOD.
 
 
   METHOD empirical_cdf.
 
+    IF _bufferized( col = col object = `ECDF` ).
+      _get_from_buffer( EXPORTING col = col object = `ECDF` IMPORTING data = r ).
+      RETURN.
+    ENDIF.
+
     _check_num_col( col ).
 
     DATA(values)      = _get_num_values( col ).
-    DATA(total)       = count( ).
-    DATA(dist_values) = distinct( col ).
+    DATA(total)       = CONV f( count( ) ).
+    DATA(dist_values) = values.
+
+    SORT dist_values BY value.
+    DELETE ADJACENT DUPLICATES FROM dist_values COMPARING value.
+
+    CHECK total IS NOT INITIAL.
+
+    SORT values BY value.
 
     r = VALUE #( FOR dv IN dist_values
-      ( x = dv
-        y = REDUCE f( INIT p = 0 FOR v IN values WHERE ( value LE CONV f( dv ) ) NEXT p = p + 1 ) / total ) ).
+          ( x = dv-value ) ).
+
+    FIELD-SYMBOLS <r> LIKE LINE OF r.
+    DATA ix   TYPE i VALUE 0.
+    DATA prev TYPE f.
+
+    LOOP AT values INTO DATA(val).
+
+      IF <r> IS NOT ASSIGNED OR val-value > <r>-x.
+        prev = COND #( WHEN <r> IS ASSIGNED THEN <r>-y ELSE `0.0` ).
+        ix = ix + 1.
+        READ TABLE r ASSIGNING <r> INDEX ix.
+      ENDIF.
+
+      <r>-y = <r>-y + prev + 1.
+
+    ENDLOOP.
+
+    LOOP AT r ASSIGNING <r>.
+      <r>-y = <r>-y / total.
+    ENDLOOP.
+
+*    r = VALUE #( FOR dv IN dist_values
+*      ( x = dv
+*        y = REDUCE f( INIT p = 0 FOR v IN values WHERE ( value LE CONV f( dv ) ) NEXT p = p + 1 ) / total ) ).
+
+    _add_to_buffer( col = col object = `ECDF` data = r ).
 
   ENDMETHOD.
 
 
   METHOD empirical_pdf.
 
+    IF _bufferized( col = col object = `EPDF` ).
+      _get_from_buffer( EXPORTING col = col object = `EPDF` IMPORTING data = r ).
+      RETURN.
+    ENDIF.
+
     _check_num_col( col ).
 
     DATA(hist)  = histogram( col ).
     DATA(n)     = CONV f( count( ) ).
 
-    r = VALUE #( FOR _hist IN hist ( x = _hist-x y = _hist-y / n ) ).
+    CHECK n IS NOT INITIAL.
+
+    r = VALUE #( FOR _hist IN hist ( x = _hist-x y = CONV f( _hist-y ) / n ) ).
+
+    _add_to_buffer( col = col object = `EPDF` data = r ).
+
 
   ENDMETHOD.
 
 
   METHOD first_quartile.
+
+    IF _bufferized( col = col object = `FQR` ).
+      _get_from_buffer( EXPORTING col = col object = `FQR` IMPORTING data = r ).
+      RETURN.
+    ENDIF.
 
     _check_num_col( col ).
 
@@ -553,12 +879,15 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
     DATA(value_ref) = _create_data_like( col ).
     ASSIGN value_ref->* TO FIELD-SYMBOL(<val>).
 
+    CHECK values IS NOT INITIAL.
     SORT values BY value.
 
     DATA(left_ix)   = floor( CONV f( ( total + 1 ) / 4 ) ).
     DATA(right_ix)  = ceil( CONV f( ( total + 1 ) / 4 ) ).
 
     r = <val> = ( values[ left_ix ]-value + values[ right_ix ]-value ) / 2.
+
+    _add_to_buffer( col = col object = `FQR` data = r ).
 
   ENDMETHOD.
 
@@ -574,16 +903,33 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD geometric.
+
+    _check_p( p ).
+    _check_size( size ).
+
+    r = VALUE #( FOR i = 0 UNTIL i = size ( ceil( log( 1 - _unique( uniform( ) ) ) / log( 1 - p ) ) ) ).
+
+  ENDMETHOD.
+
+
   METHOD geometric_mean.
+
+    IF _bufferized( col = col object = `GME` ).
+      _get_from_buffer( EXPORTING col = col object = `GME` IMPORTING data = r ).
+      RETURN.
+    ENDIF.
 
     _check_num_col( col ).
 
     DATA(values)  = _get_num_values( col ).
-    DATA(res)     = _create_data_like( col ).
     DATA(lines)   = CONV f( count( ) ).
 
-    ASSIGN res->* TO FIELD-SYMBOL(<val>).
-    r = <val> = REDUCE #( INIT gm = CONV f( 1 ) FOR val IN values NEXT gm = gm * ( val-value ** ( 1 / lines ) ) ).
+    CHECK values IS NOT INITIAL.
+
+    r = REDUCE #( INIT gm = CONV f( 1 ) FOR val IN values NEXT gm = gm * ( val-value ** ( `1.0` / lines ) ) ).
+
+    _add_to_buffer( col = col object = `GME` data = r ).
 
   ENDMETHOD.
 
@@ -601,40 +947,92 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
 
   METHOD harmonic_mean.
 
+    IF _bufferized( col = col object = `HME` ).
+      _get_from_buffer( EXPORTING col = col object = `HME` IMPORTING data = r ).
+      RETURN.
+    ENDIF.
+
     _check_num_col( col ).
 
     DATA(values)  = _get_num_values( col ).
-    DATA(res)     = _create_data_like( col ).
     DATA(lines)   = CONV f( count( ) ).
 
-    ASSIGN res->* TO FIELD-SYMBOL(<val>).
-    r = <val> = lines / REDUCE #( INIT sr = CONV f( 0 ) FOR val IN values NEXT sr = sr + ( 1 / val-value ) ).
+    CHECK values IS NOT INITIAL.
+    IF line_exists( values[ value = `0.0` ] ).
+      r = `0`.
+      RETURN.
+    ENDIF.
+
+    r = lines / REDUCE #( INIT sr = CONV f( 0 ) FOR val IN values NEXT sr = sr + ( `1.0` / val-value ) ).
+
+    _add_to_buffer( col = col object = `HME` data = r ).
 
   ENDMETHOD.
 
 
   METHOD histogram.
 
+    IF _bufferized( col = col object = `HIST` ).
+      _get_from_buffer( EXPORTING col = col object = `HIST` IMPORTING data = r ).
+      RETURN.
+    ENDIF.
+
     _check_num_col( col ).
 
     DATA(values)  = _get_num_values( col ).
     DATA(bins)    = _create_bins( col ).
 
-    r = VALUE #( FOR bin IN bins
-      ( x = bin-y
-        y = REDUCE f( INIT f = CONV f( 0 ) FOR v IN values WHERE ( value > bin-x AND value <= bin-y ) NEXT f = f + 1 )  ) ).
+    r = VALUE #( FOR _bin IN bins
+      ( x = _bin-x ) ).
+
+    SORT values BY value.
+
+    FIELD-SYMBOLS <r> LIKE LINE OF r.
+    DATA bin  LIKE LINE OF bins.
+    DATA ix   TYPE i VALUE 0.
+
+    LOOP AT values INTO DATA(val).
+
+      IF <r> IS NOT ASSIGNED OR val-value NOT BETWEEN bin-x AND bin-y.
+        ix = ix + 1.
+        READ TABLE bins INTO bin INDEX ix.
+        READ TABLE r ASSIGNING <r> WITH KEY x = bin-x.
+      ENDIF.
+
+      <r>-y = <r>-y + 1.
+
+    ENDLOOP.
+
+    _add_to_buffer( col = col object = `HIST` data = r ).
 
   ENDMETHOD.
 
 
   METHOD interquartile_range.
 
-    r = third_quartile( col ) - first_quartile( col ).
+    IF _bufferized( col = col object = `IQR` ).
+      _get_from_buffer( EXPORTING col = col object = `IQR` IMPORTING data = r ).
+      RETURN.
+    ENDIF.
+
+    _check_num_col( col ).
+
+    DATA(value_ref) = _create_data_like( col ).
+    ASSIGN value_ref->* TO FIELD-SYMBOL(<val>).
+
+    r = <val> = third_quartile( col ) - first_quartile( col ).
+
+    _add_to_buffer( col = col object = `IQR` data = r ).
 
   ENDMETHOD.
 
 
   METHOD kurtosis.
+
+    IF _bufferized( col = col object = `KRT` ).
+      _get_from_buffer( EXPORTING col = col object = `KRT` IMPORTING data = r ).
+      RETURN.
+    ENDIF.
 
     _check_num_col( col ).
 
@@ -643,16 +1041,66 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
     DATA(mean_value)  = CONV f( mean( col ) ).
     DATA(total)       = CONV f( count( ) ).
 
-    r = REDUCE #( INIT v = CONV f( 0 ) FOR val IN values NEXT v = v + ( ( val-value - mean_value ) / std_dev ) ** 4 ).
+    CHECK total > `1.0`.
+    CHECK std_dev IS NOT INITIAL.
 
-    r = r * ( total * ( total + CONV f( 1 ) ) ) / ( ( total - CONV f( 1 ) ) * ( total - CONV f( 2 ) ) * ( total - CONV f( 3 ) ) ).
+    r = REDUCE #( INIT v = CONV f( 0 ) FOR val IN values NEXT v = v + ( ( val-value - mean_value ) / std_dev ) ** 4 ) / ( total - `1.0` ).
 
-    r = r - 3 * ( total - CONV f( 1 ) ) ** 2 / ( ( total - CONV f( 2 ) ) * ( total - CONV f( 3 ) ) ).
+    _add_to_buffer( col = col object = `KRT` data = r ).
+
+  ENDMETHOD.
+
+
+  METHOD mad_mean.
+
+    IF _bufferized( col = col object = `MAD_MEA` ).
+      _get_from_buffer( EXPORTING col = col object = `MAD_MEA` IMPORTING data = r ).
+      RETURN.
+    ENDIF.
+
+    _check_num_col( col ).
+
+    DATA(total)   = CONV f( count( ) ).
+    DATA(values)  = _get_num_values( col ).
+    DATA(mean)    = CONV f( mean( col ) ).
+
+    CHECK total IS NOT INITIAL.
+
+    r = REDUCE f( INIT mad = CONV f( 0 ) FOR v IN values NEXT mad = mad + abs( v-value - mean ) ) / total.
+
+    _add_to_buffer( col = col object = `MAD_MEA` data = r ).
+
+  ENDMETHOD.
+
+
+  METHOD mad_median.
+
+    IF _bufferized( col = col object = `MAD_MED` ).
+      _get_from_buffer( EXPORTING col = col object = `MAD_MED` IMPORTING data = r ).
+      RETURN.
+    ENDIF.
+
+    _check_num_col( col ).
+
+    DATA(total)   = CONV f( count( ) ).
+    DATA(values)  = _get_num_values( col ).
+    DATA(median)  = CONV f( median( col ) ).
+
+    CHECK total IS NOT INITIAL.
+
+    r = REDUCE f( INIT mad = CONV f( 0 ) FOR v IN values NEXT mad = mad + abs( v-value - median ) ) / total.
+
+    _add_to_buffer( col = col object = `MAD_MED` data = r ).
 
   ENDMETHOD.
 
 
   METHOD max.
+
+    IF _bufferized( col = col object = `MAX` ).
+      _get_from_buffer( EXPORTING col = col object = `MAX` IMPORTING data = r ).
+      RETURN.
+    ENDIF.
 
     _check_num_col( col ).
 
@@ -660,20 +1108,30 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
     DATA(value_ref) = _create_data_like( col ).
     ASSIGN value_ref->* TO FIELD-SYMBOL(<val>).
 
+    CHECK values IS NOT INITIAL.
+
     SORT values BY value DESCENDING.
     r = <val> = values[ 1 ]-value.
+
+    _add_to_buffer( col = col object = `MAX` data = r ).
 
   ENDMETHOD.
 
 
   METHOD mean.
 
+    IF _bufferized( col = col object = `MEA` ).
+      _get_from_buffer( EXPORTING col = col object = `MEA` IMPORTING data = r ).
+      RETURN.
+    ENDIF.
+
     _check_num_col( col ).
 
-    DATA(value_ref) = _create_data_like( col ).
-    ASSIGN value_ref->* TO FIELD-SYMBOL(<val>).
+    CHECK count( ) IS NOT INITIAL.
 
-    r = <val> = CONV f( sum( col ) ) / CONV f( count( ) ).
+    r = CONV f( sum( col ) ) / CONV f( count( ) ).
+
+    _add_to_buffer( col = col object = `MEA` data = r ).
 
   ENDMETHOD.
 
@@ -689,23 +1147,35 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
 
   METHOD min.
 
+    IF _bufferized( col = col object = `MIN` ).
+      _get_from_buffer( EXPORTING col = col object = `MIN` IMPORTING data = r ).
+      RETURN.
+    ENDIF.
+
     _check_num_col( col ).
 
     DATA(values)    = _get_num_values( col ).
     DATA(value_ref) = _create_data_like( col ).
     ASSIGN value_ref->* TO FIELD-SYMBOL(<val>).
 
+    CHECK values IS NOT INITIAL.
+
     SORT values BY value.
     r = <val> = values[ 1 ]-value.
+
+    _add_to_buffer( col = col object = `MIN` data = r ).
 
   ENDMETHOD.
 
 
   METHOD normal.
 
+    _check_sigma( variance ).
+    _check_size( size ).
+
     DATA(s) = standard( size ).
 
-    r = VALUE #( FOR x IN s ( x * variance + mean ) ).
+    r = VALUE #( FOR x IN s ( x * sqrt( variance ) + mean ) ).
 
   ENDMETHOD.
 
@@ -717,16 +1187,27 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
     DATA(min) = CONV f( min( col ) ).
     DATA(max) = CONV f( max( col ) ).
 
+    CHECK min NE max.
+
     READ TABLE _numerical_values ASSIGNING FIELD-SYMBOL(<cat>) WITH KEY column = col.
 
     LOOP AT <cat>-values ASSIGNING FIELD-SYMBOL(<val>).
       <val>-value = ( <val>-value - min ) / ( max - min ).
     ENDLOOP.
 
+    DELETE _buffers WHERE col = col.
+
+    r = VALUE #( FOR v IN <cat>-values ( v-value ) ).
+
   ENDMETHOD.
 
 
   METHOD outliers.
+
+    IF _bufferized( col = col object = `OUT` ).
+      _get_from_buffer( EXPORTING col = col object = `OUT` IMPORTING data = r ).
+      RETURN.
+    ENDIF.
 
     _check_num_col( col ).
 
@@ -746,26 +1227,65 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
 
     ENDLOOP.
 
+    _add_to_buffer( col = col object = `OUT` data = r ).
+
+  ENDMETHOD.
+
+
+  METHOD poisson.
+
+    r = VALUE #( FOR i = 0 UNTIL i = size ( REDUCE #( INIT k = 0 FOR p = CONV f( 1 ) THEN p * _unique( uniform( ) ) WHILE p > exp( ( -1 ) * l ) NEXT k = k + 1 ) - 1 ) ).
+
   ENDMETHOD.
 
 
   METHOD quadratic_mean.
 
+    IF _bufferized( col = col object = `QME` ).
+      _get_from_buffer( EXPORTING col = col object = `QME` IMPORTING data = r ).
+      RETURN.
+    ENDIF.
+
     _check_num_col( col ).
 
     DATA(values)  = _get_num_values( col ).
-    DATA(res)     = _create_data_like( col ).
     DATA(total)   = CONV f( count( ) ).
 
-    ASSIGN res->* TO FIELD-SYMBOL(<val>).
-    r = REDUCE #( INIT sr = CONV f( 0 ) FOR val IN values NEXT sr = sr + ( val-value ) ** 2 ).
+    CHECK values IS NOT INITIAL.
 
-    r = <val> = sqrt( r / total ).
+    r = sqrt( REDUCE #( INIT sr = CONV f( 0 ) FOR val IN values NEXT sr = sr + ( val-value ) ** 2 ) / total ).
+
+    _add_to_buffer( col = col object = `QME` data = r ).
+
+  ENDMETHOD.
+
+
+  METHOD range.
+
+    IF _bufferized( col = col object = `RAN` ).
+      _get_from_buffer( EXPORTING col = col object = `RAN` IMPORTING data = r ).
+      RETURN.
+    ENDIF.
+
+    _check_num_col( col ).
+
+    DATA(values)    = _get_num_values( col ).
+    DATA(value_ref) = _create_data_like( col ).
+    ASSIGN value_ref->* TO FIELD-SYMBOL(<val>).
+
+    r = <val> = max( ) - min( ).
+
+    _add_to_buffer( col = col object = `RAN` data = r ).
 
   ENDMETHOD.
 
 
   METHOD second_quartile.
+
+    IF _bufferized( col = col object = `SQR` ).
+      _get_from_buffer( EXPORTING col = col object = `SQR` IMPORTING data = r ).
+      RETURN.
+    ENDIF.
 
     _check_num_col( col ).
 
@@ -774,6 +1294,7 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
     DATA(value_ref) = _create_data_like( col ).
     ASSIGN value_ref->* TO FIELD-SYMBOL(<val>).
 
+    CHECK values IS NOT INITIAL.
     SORT values BY value.
 
     DATA(left_ix)   = floor( CONV f( ( total + 1 ) / 2 ) ).
@@ -781,10 +1302,17 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
 
     r = <val> = ( values[ left_ix ]-value + values[ right_ix ]-value ) / 2.
 
+    _add_to_buffer( col = col object = `SQR` data = r ).
+
   ENDMETHOD.
 
 
   METHOD skewness.
+
+    IF _bufferized( col = col object = `SKW` ).
+      _get_from_buffer( EXPORTING col = col object = `SKW` IMPORTING data = r ).
+      RETURN.
+    ENDIF.
 
     _check_num_col( col ).
 
@@ -793,14 +1321,22 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
     DATA(mean_value)  = CONV f( mean( col ) ).
     DATA(total)       = CONV f( count( ) ).
 
-    r = REDUCE #( INIT v = CONV f( 0 ) FOR val IN values NEXT v = v + ( ( val-value - mean_value ) / std_dev ) ** 3 ).
+    CHECK total > `2.0`.
+    CHECK std_dev IS NOT INITIAL.
 
-    r = r * total / ( ( total - CONV f( 1 ) ) * ( total - CONV f( 2 ) ) ).
+    r = total * REDUCE #( INIT v = CONV f( 0 ) FOR val IN values NEXT v = v + ( ( val-value - mean_value ) / std_dev ) ** 3 ) / ( ( total - `1.0` ) * ( total - `2.0` ) ).
+
+    _add_to_buffer( col = col object = `SKW` data = r ).
 
   ENDMETHOD.
 
 
   METHOD standard.
+**********************************************************************
+*   Box–Muller transform sampling method
+**********************************************************************
+
+    _check_size( size ).
 
     DATA(i) = SWITCH i( size MOD 2 WHEN 0 THEN size / 2 ELSE ( size + 1 ) / 2 ).
 
@@ -827,28 +1363,44 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
     DATA(mean)    = CONV f( mean( col ) ).
     DATA(std_dev) = CONV f( standard_deviation( col ) ).
 
+    CHECK std_dev IS NOT INITIAL.
+
     READ TABLE _numerical_values ASSIGNING FIELD-SYMBOL(<cat>) WITH KEY column = col.
 
     LOOP AT <cat>-values ASSIGNING FIELD-SYMBOL(<val>).
       <val>-value = ( <val>-value - mean ) / std_dev.
     ENDLOOP.
 
+    DELETE _buffers WHERE col = col.
+
+    r = VALUE #( FOR v IN <cat>-values ( v-value ) ).
+
   ENDMETHOD.
 
 
   METHOD standard_deviation.
 
+    IF _bufferized( col = col object = `DEV` ).
+      _get_from_buffer( EXPORTING col = col object = `DEV` IMPORTING data = r ).
+      RETURN.
+    ENDIF.
+
     _check_num_col( col ).
 
-    DATA(value_ref) = _create_data_like( col ).
-    ASSIGN value_ref->* TO FIELD-SYMBOL(<val>).
+    r = sqrt( CONV f( variance( col ) ) ).
 
-    r = <val> = sqrt( CONV f( variance( col ) ) ).
+    _add_to_buffer( col = col object = `DEV` data = r ).
+
 
   ENDMETHOD.
 
 
   METHOD sum.
+
+    IF _bufferized( col = col object = `SUM` ).
+      _get_from_buffer( EXPORTING col = col object = `SUM` IMPORTING data = r ).
+      RETURN.
+    ENDIF.
 
     _check_num_col( col ).
 
@@ -868,10 +1420,17 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
 
     ENDTRY.
 
+    _add_to_buffer( col = col object = `SUM` data = r ).
+
   ENDMETHOD.
 
 
   METHOD third_quartile.
+
+    IF _bufferized( col = col object = `TQR` ).
+      _get_from_buffer( EXPORTING col = col object = `TQR` IMPORTING data = r ).
+      RETURN.
+    ENDIF.
 
     _check_num_col( col ).
 
@@ -880,6 +1439,7 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
     DATA(value_ref) = _create_data_like( col ).
     ASSIGN value_ref->* TO FIELD-SYMBOL(<val>).
 
+    CHECK values IS NOT INITIAL.
     SORT values BY value.
 
     DATA(left_ix)   = floor( CONV f( ( 3 * ( total + 1 ) ) / 4 ) ).
@@ -887,10 +1447,14 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
 
     r = <val> = ( values[ left_ix ]-value + values[ right_ix ]-value ) / 2.
 
+    _add_to_buffer( col = col object = `TQR` data = r ).
+
   ENDMETHOD.
 
 
   METHOD uniform.
+
+    _check_size( size ).
 
     DATA(randomizer) = cl_abap_random_float=>create( cl_abap_random=>seed( ) ).
 
@@ -907,25 +1471,57 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
 
   METHOD variance.
 
+    IF _bufferized( col = col object = `VAR` ).
+      _get_from_buffer( EXPORTING col = col object = `VAR` IMPORTING data = r ).
+      RETURN.
+    ENDIF.
+
     _check_num_col( col ).
 
     DATA(values)      = _get_num_values( col ).
     DATA(mean_value)  = CONV f( mean( col ) ).
     DATA(total)       = CONV f( count( ) ).
-    DATA(value_ref)   = _create_data_like( col ).
-    ASSIGN value_ref->* TO FIELD-SYMBOL(<val>).
 
-    DATA(var) = REDUCE #( INIT v = CONV f( 0 ) FOR val IN values NEXT v = v + ( val-value - mean_value ) ** 2 ) / ( total - 1 ).
+    CHECK total > `1.0`.
 
-    TRY.
+    r = REDUCE #( INIT v = CONV f( 0 ) FOR val IN values NEXT v = v + ( val-value - mean_value ) ** 2 ) / ( total - `1.0` ).
 
-        r = <val> = var.
+    _add_to_buffer( col = col object = `VAR` data = r ).
 
-      CATCH cx_sy_conversion_overflow.
+  ENDMETHOD.
 
-        r = var.
 
-    ENDTRY.
+  METHOD _add_to_buffer.
+
+    DATA data_ref TYPE REF TO data.
+
+    CREATE DATA data_ref LIKE data.
+    ASSIGN data_ref->* TO FIELD-SYMBOL(<data>).
+    <data> = data.
+
+    APPEND VALUE #(
+      col     = col
+      object  = object
+      data    = data_ref ) TO _buffers.
+
+  ENDMETHOD.
+
+
+  METHOD _bufferized.
+
+    r = xsdbool( line_exists( _buffers[ col = col object = object ] ) ).
+
+  ENDMETHOD.
+
+
+  METHOD _cat_distinct.
+
+    DATA(values) = _get_cat_values( col ).
+
+    SORT values BY value.
+    DELETE ADJACENT DUPLICATES FROM values COMPARING value.
+
+    r = VALUE #( FOR v IN values ( v-value ) ).
 
   ENDMETHOD.
 
@@ -948,6 +1544,24 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD _check_lambda.
+
+    IF NOT l > `0.0`.
+      RAISE EXCEPTION TYPE zcx_tbox_stats EXPORTING textid = zcx_tbox_stats=>l_not_valid.
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD _check_n.
+
+    IF NOT n > 0.
+      RAISE EXCEPTION TYPE zcx_tbox_stats EXPORTING textid = zcx_tbox_stats=>n_not_valid.
+    ENDIF.
+
+  ENDMETHOD.
+
+
   METHOD _check_num_col.
 
     IF NOT line_exists( _numerical_values[ column = col ] ).
@@ -957,31 +1571,47 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD _check_p.
+
+    IF p NOT BETWEEN `0.0` AND `1.0`.
+      RAISE EXCEPTION TYPE zcx_tbox_stats EXPORTING textid = zcx_tbox_stats=>p_not_valid.
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD _check_sigma.
+
+    IF NOT s > `0.0`.
+      RAISE EXCEPTION TYPE zcx_tbox_stats EXPORTING textid = zcx_tbox_stats=>v_not_valid.
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD _check_size.
+
+    IF NOT s > 0.
+      RAISE EXCEPTION TYPE zcx_tbox_stats EXPORTING textid = zcx_tbox_stats=>s_not_valid.
+    ENDIF.
+
+  ENDMETHOD.
+
+
   METHOD _create_bins.
 
-    DATA(values)  = distinct( col ).
+    DATA(total)   = CONV f( count( ) ).
+    DATA(min)     = CONV f( min( ) ).
+    DATA(max)     = CONV f( max( ) ).
+    DATA(iqr)     = CONV f( interquartile_range( ) ).
 
-    DATA(diff)    = VALUE string_table( ).
+**********************************************************************
+*   Freedman-Diaconis rule
+**********************************************************************
+    DATA(bin_width) = ( iqr / ( total ** ( 1 / 3 ) ) ) * 2.
+    DATA(bin_total) = CONV i( ( max - min ) / bin_width ).
 
-    DATA prev_value TYPE f.
-    DATA bin_len    TYPE f.
-
-    LOOP AT values INTO DATA(value).
-      bin_len = bin_len + CONV f( value ) - prev_value.
-      prev_value = CONV f( value ).
-    ENDLOOP.
-
-    bin_len = ( bin_len / lines( values ) ) * 2.
-
-    DATA(min_val) = VALUE f( values[ 1 ] OPTIONAL ).
-    DATA(max_val) = VALUE f( values[ lines( values ) ] OPTIONAL ).
-
-    APPEND VALUE #( x = min_val - bin_len y = min_val ) TO r.
-
-    WHILE min_val < max_val + bin_len.
-      APPEND VALUE #( x = min_val y = min_val + bin_len ) TO r.
-      min_val = min_val + bin_len.
-    ENDWHILE.
+    r = VALUE #( FOR i = 0 THEN i + 1 UNTIL i = bin_total ( x = min + i * bin_width y = min + ( i + 1 ) * bin_width ) ).
 
   ENDMETHOD.
 
@@ -1006,9 +1636,60 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD _get_cat_values.
+
+    r = _categorial_values[ column = col ]-values.
+
+  ENDMETHOD.
+
+
+  METHOD _get_from_buffer.
+
+    DATA(data_ref) = _buffers[ col = col object = object ]-data.
+
+    ASSIGN data_ref->* TO FIELD-SYMBOL(<data>).
+    data = <data>.
+
+  ENDMETHOD.
+
+
   METHOD _get_num_values.
 
     r = _numerical_values[ column = col ]-values.
+
+  ENDMETHOD.
+
+
+  METHOD _get_values.
+
+    IF line_exists( _categorial_values[ column = col ] ).
+      r = _categorial_values[ column = col ]-values.
+      RETURN.
+    ENDIF.
+
+    IF line_exists( _numerical_values[ column = col ] ).
+      r = VALUE #( FOR n IN _numerical_values[ column = col ]-values ( ix = n-ix value = CONV string( n-value ) ) ).
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD _num_distinct.
+
+    DATA(values) = _get_num_values( col ).
+
+    SORT values BY value.
+    DELETE ADJACENT DUPLICATES FROM values COMPARING value.
+
+    DATA(value_ref) = _create_data_like( col ).
+    ASSIGN value_ref->* TO FIELD-SYMBOL(<val>).
+
+    LOOP AT values INTO DATA(val).
+
+      <val> = val-value.
+      APPEND <val> TO r.
+
+    ENDLOOP.
 
   ENDMETHOD.
 
@@ -1091,6 +1772,13 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
       ENDLOOP.
 
     ENDLOOP.
+
+  ENDMETHOD.
+
+
+  METHOD _unique.
+
+    r = tab[ 1 ].
 
   ENDMETHOD.
 ENDCLASS.
