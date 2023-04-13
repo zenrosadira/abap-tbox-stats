@@ -241,7 +241,7 @@ DATA(prices_per_currency) = grouped_by_currency->col( `LOCCURAM` ).
 DATA(dev_cur)             = prices_per_currency->standard_deviation( ).
 ```
 
-`dev_cur` is a table with two fields: the second one is a value containing the statistics computed (standard deviation in this example), the first one is a table with the group by condition: `group_field` contains the field grouped by (only `FORCURKEY` in this example) and `group_value` contains the corresponding value.
+`dev_cur` is a table with two fields: the second one is a value containing the statistics computed (standard deviation in this example), the first one is a table with the group-by conditions: `group_field` contains the field grouped by (only `FORCURKEY` in this example) and `group_value` contains the corresponding value.
 
 The same result can be obtained passing a table with the fields grouped by and a field named with the statistic to be computed:
 
