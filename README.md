@@ -215,7 +215,7 @@ DATA(poisson_distribution) = ztbox_cl_stats=>poisson( l = 4 size = 100 ).
 
 ## Joint Variability
 ### Covariance
-In order to compute the sample covariance of two columns call method `->covariance` passing the columns separated by a comma
+In order to compute the sample covariance of two columns call method `->covariance` passing the columns separated by comma
 
 ```abap
 DATA(stats)      = NEW ztbox_cl_stats( t_sbook ).
@@ -228,3 +228,41 @@ The sample correlation coefficient is computed by calling `->correlation` method
 DATA(stats)      = NEW ztbox_cl_stats( t_sbook ).
 DATA(covariance) = stats->covariance( `LOCCURAM, LUGGWEIGHT` ). " [0.17]
 ```
+
+## Aggregations
+Each instance method explained so far can be calculated by first perform a group by with another column
+
+```abap
+DATA(stats)               = NEW ztbox_cl_stats( sbook ).
+DATA(grouped_by_currency) = stats->group_by( `FORCURKEY` ).
+DATA(prices_per_currency) = grouped_by_currency->col( `LOCCURAM` ).
+DATA(dev_cur)             = prices_per_currency->standard_deviation( ).
+```
+
+`dev_cur` is a table with two fields: the second one is a value containing the statistics computed (standard deviation in this example), the first one is a table with the group by condition: `group_field` contains the field grouped by (only `FORCURKEY` in this example) and `group_value` contains the corresponding value.
+
+The same result can be obtained passing a table with the fields grouped by and a field named with the statistic to be computed:
+
+```abap
+TYPES: BEGIN OF ty_dev_cur,
+         forcurkey          TYPE sbook-forcurkey,
+         standard_deviation TYPE f,
+       END OF ty_dev_cur.
+
+DATA t_dev_cur TYPE TABLE OF ty_dev_cur.
+
+prices_per_currency->standard_deviation( IMPORTING e_result = t_dev_cur ).
+```
+
+| FORCURKEY | STANDARD_DEVIATION |
+| :---: | :---: |
+| EUR	| 7.4552828433404977E+02 |
+| USD	| 7.5823449440803665E+02 |
+| GBP	| 6.7810223234147134E+02 |
+| JPY	| 6.0950004556126635E+02 |
+| CHF	| 8.1988721181761377E+02 |
+| AUD	| 7.7221881749653369E+02 |
+| ZAR	| 7.9085811097466910E+02 |
+| SGD	| 1.0533820843863814E+03 |
+| SEK	| 6.0380071198098267E+02 |
+| CAD	| 7.8378300759376316E+02 |
