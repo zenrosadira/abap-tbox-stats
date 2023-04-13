@@ -1,5 +1,5 @@
 # ABAP Statistical Tools
-Statistics with ABAP: why not? In this ABAP class `ztbox_cl_stats` some of the most common descriptive statistics functions have been included together with simple tools to generate distributions and produce empirical inference analyses.
+Statistics with ABAP: why not? This project consist of an ABAP class `ztbox_cl_stats` where some of the most common descriptive statistics functions have been included together with simple tools to generate distributions and produce empirical inference analyses.
 
 ## Basic Features & Elementary Statistics
 Let's compute some statistics on `SBOOK` table
