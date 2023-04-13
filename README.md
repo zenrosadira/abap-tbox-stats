@@ -170,7 +170,7 @@ In order to answer the question "are the values normally distributed?" you can u
 DATA(normality_test) = prices->are_normal( ) " [abap_false].
 ```
 
-This method implements the [Jarque-Bera normality test](https://en.wikipedia.org/wiki/Jarque%E2%80%93Bera_test). The $p$-value is an exported parameter and the test is considered passed if $p\mathrm{-value} \le 0.5$.
+This method implements the [Jarque-Bera normality test](https://en.wikipedia.org/wiki/Jarque%E2%80%93Bera_test). The $p$-value is an exported parameter and the test is considered passed if $p\mathrm{-value} > 0.5$.
 
 ## Distributions
 
