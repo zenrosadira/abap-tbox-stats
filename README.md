@@ -164,7 +164,7 @@ Similarly, for each distinct value $x$, we can compute the number $\frac{\mathrm
 DATA(empirical_dist) = prices->empirical_cdf( ).
 ```
 
-In order to answer the question "are the values normally distributed" you can use method `->are_normal( )`
+In order to answer the question "are the values normally distributed?" you can use method `->are_normal( )`
 
 ```abap
 DATA(normality_test) = prices->are_normal( ) " [abap_false].
