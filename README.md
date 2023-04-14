@@ -228,7 +228,7 @@ DATA(poisson_values) = ztbox_cl_stats=>poisson( l = 4 size = 100 ).
 " default is =>poisson( l = `1.0` size = 1 )
 ```
 
-Let's plot the *empirical probability density function* of a sample of 100000 values drawn from a generated standard distribution:
+Let's plot the *empirical probability density function* of a sample of 100000 values drawn from a generated standard normal distribution:
 
 ```abap
 DATA(gauss)      = ztbox_cl_stats=>standard( size = 100000 ).
