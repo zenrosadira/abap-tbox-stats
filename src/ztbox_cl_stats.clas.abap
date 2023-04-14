@@ -815,22 +815,19 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
     LOOP AT values INTO DATA(val).
 
       IF <r> IS NOT ASSIGNED OR val-value > <r>-x.
-        prev = COND #( WHEN <r> IS ASSIGNED THEN <r>-y ELSE `0.0` ).
+        prev = COND f( WHEN <r> IS ASSIGNED THEN <r>-y ELSE `0.0` ).
         ix = ix + 1.
         READ TABLE r ASSIGNING <r> INDEX ix.
+        <r>-y = prev.
       ENDIF.
 
-      <r>-y = <r>-y + prev + 1.
+      <r>-y = <r>-y + `1.0`.
 
     ENDLOOP.
 
     LOOP AT r ASSIGNING <r>.
       <r>-y = <r>-y / total.
     ENDLOOP.
-
-*    r = VALUE #( FOR dv IN dist_values
-*      ( x = dv
-*        y = REDUCE f( INIT p = 0 FOR v IN values WHERE ( value LE CONV f( dv ) ) NEXT p = p + 1 ) / total ) ).
 
     _add_to_buffer( col = col object = `ECDF` data = r ).
 
@@ -854,7 +851,6 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
     r = VALUE #( FOR _hist IN hist ( x = _hist-x y = CONV f( _hist-y ) / n ) ).
 
     _add_to_buffer( col = col object = `EPDF` data = r ).
-
 
   ENDMETHOD.
 
