@@ -313,4 +313,4 @@ prices_per_currency->standard_deviation( IMPORTING e_result = t_dev_cur ).
 Many features can be improved or extended (new distribution generators? implementing statistic tests?) every contribution is appreciated
 
 # Installation
-Install this project using [abapGit](https://abapgit.org/) ![abapGit](https://docs.abapgit.org/img/favicon.png)
+Install this project using [abapGit](https://abapgit.org/)
