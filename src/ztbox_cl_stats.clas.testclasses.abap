@@ -26,7 +26,7 @@ CLASS ltcl_stats IMPLEMENTATION.
     " 0.0 .. 9.9 and five times 100: every bin between the two groups is
     " empty, the five values belong into the last bin
     DATA(values) = VALUE ztbox_cl_stats=>ty_floats( FOR i = 0 UNTIL i = 100 ( CONV f( i ) / 10 ) ).
-    values = VALUE #( BASE values ( 100 ) ( 100 ) ( 100 ) ( 100 ) ( 100 ) ).
+    values = VALUE #( BASE values FOR j = 1 UNTIL j > 5 ( CONV f( 100 ) ) ).
 
     DATA(histogram) = NEW ztbox_cl_stats( values )->histogram( ).
 
