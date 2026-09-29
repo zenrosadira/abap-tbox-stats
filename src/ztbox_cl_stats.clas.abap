@@ -964,6 +964,8 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
     r = VALUE #( FOR _bin IN bins
       ( x = _bin-x ) ).
 
+    CHECK bins IS NOT INITIAL.
+
     SORT values BY value.
 
     FIELD-SYMBOLS <r> LIKE LINE OF r.
@@ -972,11 +974,15 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
 
     LOOP AT values INTO DATA(val).
 
-      IF <r> IS NOT ASSIGNED OR val-value NOT BETWEEN bin-x AND bin-y.
+      " WHILE, not IF: a value may lie several bins further on when the bins
+      " in between are empty - advancing one bin per value put it into the
+      " next bin instead. r is built from bins in the same order, so the
+      " row is read by index (no string-vs-float key comparison needed).
+      WHILE <r> IS NOT ASSIGNED OR ( val-value > bin-y AND ix < lines( bins ) ).
         ix = ix + 1.
         READ TABLE bins INTO bin INDEX ix.
-        READ TABLE r ASSIGNING <r> WITH KEY x = bin-x.
-      ENDIF.
+        READ TABLE r ASSIGNING <r> INDEX ix.
+      ENDWHILE.
 
       <r>-y = <r>-y + 1.
 
@@ -1326,7 +1332,10 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
 
       APPEND ( sqrt( ( -2 ) * log( CONV f( u_1[ 1 ] ) ) ) * cos( 2 * acos( -1 ) * CONV f( u_2[ 1 ] ) ) ) TO r.
 
-      IF sy-index EQ i AND i MOD 2 EQ 0.
+      " Box-Muller yields two values per draw - keep the second one on
+      " every draw but the last of an odd size (was: only on the last
+      " draw, so size = 10000 returned 5001 values)
+      IF sy-index < i OR size MOD 2 EQ 0.
         APPEND ( sqrt( ( -2 ) * log( CONV f( u_1[ 1 ] ) ) ) * sin( 2 * acos( -1 ) * CONV f( u_2[ 1 ] ) ) ) TO r.
       ENDIF.
 
@@ -1579,15 +1588,29 @@ CLASS ZTBOX_CL_STATS IMPLEMENTATION.
 
   METHOD _create_bins.
 
+    " col passed on: without it the bins were always computed for
+    " TABLE_LINE, so histogram( `COLUMN` ) on a structured table raised
+    " column_not_numerical
     DATA(total)   = CONV f( count( ) ).
-    DATA(min)     = CONV f( min( ) ).
-    DATA(max)     = CONV f( max( ) ).
-    DATA(iqr)     = CONV f( interquartile_range( ) ).
+    DATA(min)     = CONV f( min( col ) ).
+    DATA(max)     = CONV f( max( col ) ).
+    DATA(iqr)     = CONV f( interquartile_range( col ) ).
 
 **********************************************************************
 *   Freedman-Diaconis rule
 **********************************************************************
     DATA(bin_width) = ( iqr / ( total ** ( 1 / 3 ) ) ) * 2.
+
+    " IQR = 0 (e.g. 0/1 data) gave a division by zero: fall back to
+    " Sturges' rule, and to a single bin when all values are equal
+    IF bin_width = 0.
+      IF max = min.
+        r = VALUE #( ( x = min y = max ) ).
+        RETURN.
+      ENDIF.
+      bin_width = ( max - min ) / ceil( log( total ) / log( 2 ) + 1 ).
+    ENDIF.
+
     DATA(bin_total) = CONV i( ( max - min ) / bin_width ).
 
     r = VALUE #( FOR i = 0 THEN i + 1 UNTIL i = bin_total ( x = min + i * bin_width y = min + ( i + 1 ) * bin_width ) ).
